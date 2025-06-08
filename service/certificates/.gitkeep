@@ -1,0 +1,3 @@
+This folder contains certificates, private keys, and other sensitive files.
+All such files are excluded from the repository for security reasons.
+See .gitignore for details.

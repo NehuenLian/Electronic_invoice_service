@@ -1,0 +1,3 @@
+service/certificates/*
+!service/certificates/.gitkeep
+!service/certificates/README.md

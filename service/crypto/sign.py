@@ -1,0 +1,40 @@
+import base64
+import subprocess
+
+
+def sign_login_ticket_request():
+    # Development
+    openssl_path = "C:\\Program Files\\OpenSSL-Win64\\bin\\openssl.exe"
+    sign_command = [
+        openssl_path, "cms", "-sign",
+        "-in", "service/xml_management/LoginTicketRequest.xml",
+        "-out", "service/crypto/LoginTicketRequest.xml.cms",
+        "-signer", "service/certificates/returned_certificate.pem",
+        "-inkey", "service/certificates/PrivateKey.key",
+        "-nodetach",
+        "-outform", "DER"
+    ]
+
+    # Production
+    """
+    sign_command = [ 
+        "openssl", "cms", "-sign",
+        "-in", "service/xml_files/LoginTicketRequest.xml",
+        "-out", "./LoginTicketRequest.xml.cms",
+        "-signer", "service/certificates/returned_certificate.pem",
+        "-inkey", "service/certificates/PrivateKey.key",
+        "-nodetach",
+        "-outform", "DER"
+    ]
+    """
+    
+    result_cms = subprocess.run(sign_command, capture_output=True, text=True)
+    print(result_cms)
+
+def get_binary_cms():
+    with open("service/crypto/LoginTicketRequest.xml.cms", 'rb') as cms:
+        cleaned_cms = cms.read()
+
+    b64_cms = base64.b64encode(cleaned_cms).decode("ascii")
+
+    return b64_cms
