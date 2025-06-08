@@ -3,12 +3,12 @@ from service.soap_handler.soap_client import login_cms
 from service.time.time_management import compare_time
 from service.utils import timestamp_exists
 from service.xml_management.xml_builder import (build_login_ticket_request,
-                                                guardar_xml)
+                                                save_xml)
 
 
 def request_access_token():
     root = build_login_ticket_request()
-    guardar_xml(root)
+    save_xml(root)
     sign_login_ticket_request()
     b64_cms = get_binary_cms()
     login_cms(b64_cms)

@@ -39,7 +39,7 @@ Companies or small businesses need to issue digital fiscal tickets automatically
 ## Technologies to Use
 
 - **Main language:** Python  
-- **Cryptography:** `cryptography` library or direct use of `openssl` via `subprocess`  
+- **Cryptography:** direct use of `openssl` via `subprocess`  
 - **Communication:** XML + SOAP  
 
 ---
@@ -52,10 +52,7 @@ Companies or small businesses need to issue digital fiscal tickets automatically
 2. **Manual tests in sandbox environment**  
    Perform manual procedures to verify understanding and operation of the environment.
 
-3. **Development of automated script**  
-   Program a single `.py` file that handles the entire ticket issuance flow.
-
-4. **Final tests**  
+3. **Final tests**  
    Validate the complete script: signing, authentication, sending, and receiving the approved XML.
 
 ---
@@ -73,7 +70,7 @@ Companies or small businesses need to issue digital fiscal tickets automatically
    - Private key (`.key`)  
    - Valid X.509 certificate (validity: 2 years)  
 3. Generate the sales XML.  
-4. Sign with OpenSSL:  
+4. Sign with OpenSSL(Example command):  
    ```bash
    openssl cms -sign -in MiLoginTicketRequest.xml \
      -out MiLoginTicketRequest.xml.cms \

@@ -39,8 +39,8 @@ Las empresas o pequeños comercios necesitan emitir tickets fiscales digitales d
 ## Tecnologías a utilizar
 
 - **Lenguaje principal:** Python  
-- **Criptografía:** `cryptography` o uso directo de `openssl` mediante `subprocess`  
-- **Comunicación:** XML + SOAP  
+- **Criptografía:** Uso directo de `openssl` mediante `subprocess`  
+- **Comunicación:** XML + SOAP
 
 ---
 
@@ -52,10 +52,7 @@ Las empresas o pequeños comercios necesitan emitir tickets fiscales digitales d
 2. **Pruebas manuales en entorno sandbox**  
    Ejecutar procesos manuales para verificar comprensión y funcionamiento del entorno.
 
-3. **Desarrollo del script automatizado**  
-   Programar un único archivo `.py` que realice todo el flujo de emisión de tickets.
-
-4. **Pruebas finales**  
+3. **Pruebas finales**  
    Validación del script completo: firma, autenticación, envío, y recepción del XML aprobado.
 
 ---
@@ -73,7 +70,7 @@ Las empresas o pequeños comercios necesitan emitir tickets fiscales digitales d
    - Clave privada (`.key`)
    - Certificado X.509 válido (vigencia: 2 años)
 3. Generar el XML de la venta.
-4. Firmar con OpenSSL:
+4. Firmar con OpenSSL(Comando de ejemplo):
    ```bash
    openssl cms -sign -in MiLoginTicketRequest.xml \
      -out MiLoginTicketRequest.xml.cms \
