@@ -38,7 +38,8 @@ Implement a web service, built from scratch in Python, that performs cryptograph
 
 - **Main language:** Python  
 - **Cryptography:** direct use of `openssl` via `subprocess`  
-- **Communication:** XML + SOAP  
+- **Communication:** XML + SOAP
+- **Communication with POS system:** FastAPI
 
 ---
 

@@ -38,7 +38,8 @@ Implementar un servicio web, creado desde cero en Python, que realice tareas cri
 
 - **Lenguaje principal:** Python  
 - **Criptografía:** Uso directo de `openssl` mediante `subprocess`  
-- **Comunicación:** XML + SOAP
+- **Comunicación con AFIP:** XML + SOAP
+- **Comunicación con Punto de venta:** FastAPI
 
 ---
 
