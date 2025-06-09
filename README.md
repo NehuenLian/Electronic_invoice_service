@@ -1,16 +1,14 @@
-# Proyecto: Servicio de Facturación Electrónica y Emisión de Tickets Fiscales
+# Proyecto: API de facturación para POS con integración AFIP
+
+## Descripción del proyecto
+
+Este proyecto es un servicio web que actúa como middleware entre sistemas POS locales y la AFIP/ARCA. Recibe comprobantes en formato JSON, los transforma a XML compatible con el WS de AFIP/ARCA, envía la solicitud vía SOAP, procesa la respuesta y la devuelve al POS en JSON. Automatiza la generación de tickets impresos y PDFs, simplificando el cumplimiento fiscal desde aplicaciones de escritorio.
 
 ---
 
 ## Objetivo General
 
 Implementar un servicio web, creado desde cero en Python, que realice tareas criptográficas y se comunique con el servicio web de la entidad tributaria (ARCA) para emitir tickets fiscales al consumidor final, cumpliendo con las normativas vigentes de facturación electrónica.
-
----
-
-## Descripción del problema
-
-Las empresas o pequeños comercios necesitan emitir tickets fiscales digitales de forma automatizada, cumpliendo con los requisitos de la entidad tributaria (ARCA). Actualmente, este proceso puede ser tedioso y propenso a errores si se realiza manualmente o sin una correcta implementación de los procesos criptográficos y de autenticación.
 
 ---
 

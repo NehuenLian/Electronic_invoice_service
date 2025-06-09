@@ -23,7 +23,7 @@ def build_login_ticket_request():
 
     return root
 
-def guardar_xml(root):
+def save_xml(root):
     path = "service/xml_management/LoginTicketRequest.xml"
     os.makedirs(os.path.dirname(path), exist_ok=True)
     tree = etree.ElementTree(root)

@@ -1,16 +1,14 @@
-# Project: Electronic Invoicing Service and Fiscal Ticket Issuance
+# Invoicing API for POS with Integration to the Argentine Tax Agency
+
+## Project Description
+
+This project is a web service that acts as middleware between local POS systems and the Argentine tax agency. It receives invoices in JSON format, transforms them into XML compatible with the agency’s web services, sends the request via SOAP, processes the response, and returns it to the POS in JSON format. It automates ticket printing and PDF generation, simplifying tax compliance for desktop applications.
 
 ---
 
 ## General Objective
 
 Implement a web service, built from scratch in Python, that performs cryptographic tasks and communicates with the tax authority’s web service (ARCA) to issue fiscal tickets to the final consumer, complying with current electronic invoicing regulations.
-
----
-
-## Problem Description
-
-Companies or small businesses need to issue digital fiscal tickets automatically, meeting the requirements of the tax authority (ARCA). Currently, this process can be tedious and error-prone if done manually or without proper implementation of cryptographic and authentication processes.
 
 ---
 
