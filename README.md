@@ -21,6 +21,28 @@ Implementar un servicio web, creado desde cero en Python, que realice tareas cri
 
 ---
 
+## Estructura pensada
+
+```text
+INVOICE_SERVICE/
+├── service/
+│   ├── payload_builder/
+│   │   ├── __init__.py
+│   │   └── builder.py
+│   ├── certificates/
+│   ├── crypto/
+│   ├── soap_handler/
+│   ├── time/
+│   │   ├── __init__.py
+│   │   └── time_management.py
+│   ├── xml_management/
+│   └── exceptions.py
+├── main.py
+├── .env
+├── requirements.txt
+└── README.md
+```
+
 ## Requerimientos funcionales
 
 1. El servicio debe verificar si el **token** vigente ha expirado antes de enviar una factura.

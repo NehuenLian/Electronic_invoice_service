@@ -21,6 +21,32 @@ Implement a web service, built from scratch in Python, that performs cryptograph
 
 ---
 
+## Project Structure
+
+Here is the main directory layout of the INVOICE_SERVICE project:
+
+```text
+INVOICE_SERVICE/
+├── service/
+│   ├── payload_builder/
+│   │   ├── __init__.py
+│   │   └── builder.py
+│   ├── certificates/
+│   ├── crypto/
+│   ├── soap_handler/
+│   ├── time/
+│   │   ├── __init__.py
+│   │   └── time_management.py
+│   ├── xml_management/
+│   └── exceptions.py
+├── main.py
+├── .env
+├── requirements.txt
+└── README.md
+```
+
+---
+
 ## Functional Requirements
 
 1. The service must verify if the current **token** has expired before sending an invoice.
