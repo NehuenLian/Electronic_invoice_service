@@ -21,7 +21,9 @@ Implementar un servicio web, creado desde cero en Python, que realice tareas cri
 
 ---
 
-## Estructura pensada
+## Estructura del proyecto
+
+Esta es la estructura pensada para este servicio de facturación:
 
 ```text
 INVOICE_SERVICE/
