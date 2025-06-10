@@ -23,9 +23,37 @@ def build_login_ticket_request():
 
     return root
 
-def save_xml(root):
-    path = "service/xml_management/LoginTicketRequest.xml"
+def parse_and_save_loginticketresponse(login_ticket_response: str):
+
+    root = etree.fromstring(login_ticket_response)
+    header = etree.SubElement(root, "header")
+    source = etree.SubElement(header, "source")
+    destination = etree.SubElement(header, "destination")
+    unique_id = etree.SubElement(header, "uniqueId")
+    generation_time_label = etree.SubElement(header, "generationTime")
+    expiration_time_label = etree.SubElement(header, "expirationTime")
+
+    credentials = etree.SubElement(root, "credentials")
+    token = etree.SubElement(credentials, "token")
+    sign = etree.SubElement(credentials, "sign")
+
+    save_xml(root, "LoginTicketResponse.xml")
+
+def extract_token_and_sign_from_loginticketresponse(xml_name: str) -> tuple[str, str]:
+    path = f"service/xml_management/{xml_name}"
+    tree = etree.parse(path)
+    root = tree.getroot()
+
+    token_label = root.find(".//token")
+    sign_label = root.find(".//sign")
+
+    token = token_label.text
+    sign = sign_label.text
+
+    return token, sign
+
+def save_xml(root, xml_name):
+    path = f"service/xml_management/{xml_name}"
     os.makedirs(os.path.dirname(path), exist_ok=True)
     tree = etree.ElementTree(root)
     tree.write(path, pretty_print=True, xml_declaration=True, encoding="UTF-8")
- 

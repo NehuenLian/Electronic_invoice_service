@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
 
-def generate_timestamp():
+def generate_timestamp() -> tuple[str, str, str]:
 
     baires_tz = ZoneInfo("America/Argentina/Buenos_Aires")
     actual_hour = int(time.time())
@@ -19,7 +19,7 @@ def generate_timestamp():
 
     return actual_hour, generation_time, expiration_time
 
-def compare_time():
+def compare_time() -> bool:
 
     actual_hour = int(time.time())
     path = "service/time/actual_hour_epoch.txt"
@@ -27,7 +27,6 @@ def compare_time():
     with open(path, 'r', encoding='utf-8') as file:
         token_request_hour = int(file.read())
 
-    twelve_hours = 43200 # 12 hours represented in seconds
     hours_difference = actual_hour - token_request_hour
 
     if hours_difference > 0:

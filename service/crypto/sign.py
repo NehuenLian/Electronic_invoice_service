@@ -30,7 +30,7 @@ def sign_login_ticket_request():
     
     result_cms = subprocess.run(sign_command, capture_output=True, text=True)
 
-def get_binary_cms():
+def get_binary_cms() -> str:
     with open("service/crypto/LoginTicketRequest.xml.cms", 'rb') as cms:
         cleaned_cms = cms.read()
 
