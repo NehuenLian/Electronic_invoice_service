@@ -27,7 +27,7 @@ def request_access_token():
     logger.info("loginTicketResponse received from ARCA.")
 
     parse_and_save_loginticketresponse(login_ticket_response)
-    logger.info("LoginTicketResponse parsed and saved successfully.")
+    logger.info("loginTicketResponse parsed and saved successfully.")
 
 def generate_invoice():
     logger.info("Starting invoice generation process.")
@@ -63,7 +63,7 @@ def main():
         else:
             logger.info("Valid timestamp found. Proceeding to generate invoice...")
             generate_invoice()
-            
+
     logger.info("Invoice generated and approved successfully.")
 
 if __name__ == "__main__":
