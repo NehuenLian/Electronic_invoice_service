@@ -8,3 +8,12 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+
+# Ignore XML files
+*.xml
+
+# Ignore cms files
+*.cms
+
+# Ignore actual_hour_epoch.txt
+actual_hour_epoch.txt
