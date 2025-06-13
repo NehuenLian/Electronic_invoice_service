@@ -23,6 +23,7 @@ def generate_timestamp() -> tuple[str, str, str]:
 
 
 def is_token_expired() -> bool:
+    
     current_timestamp = int(time.time())
     path = "service/time/actual_hour_epoch.txt"
 
