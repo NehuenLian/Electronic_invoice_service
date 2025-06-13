@@ -29,11 +29,11 @@ def is_token_expired() -> bool:
     with open(path, 'r', encoding='utf-8') as file:
         token_timestamp = int(file.read())
 
-    print("Current timestamp:", current_timestamp)
-    print("Token timestamp:", token_timestamp)
+    logger.debug("Current timestamp:", current_timestamp)
+    logger.debug("Token timestamp:", token_timestamp)
 
     time_difference = token_timestamp - current_timestamp
-    print("Time difference in seconds:", time_difference)
+    logger.debug("Time difference in seconds:", time_difference)
 
     MAX_ALLOWED_DIFFERENCE = 43200  # 12 hours in seconds
 

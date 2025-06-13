@@ -1,16 +1,10 @@
-import json
-
 from service.utils.logger import logger
 
 
-def add_auth_to_payload(token, sign):
-
-    json_path = "service/json_management/sale_data.json"
-
-    with open(json_path, 'r', encoding='utf-8') as file:
-            sale_data = json.load(file)
-
+def add_auth_to_payload(sale_data: dict, token: str, sign: str) -> dict:
+    
     sale_data['Auth']['Token'] = token
     sale_data['Auth']['Sign'] = sign
+    logger.debug("Auth added to payload.")
 
     return sale_data
