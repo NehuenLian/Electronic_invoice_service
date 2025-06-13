@@ -3,6 +3,8 @@ import time
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
+from service.utils.logger import logger
+
 
 def generate_timestamp() -> tuple[str, str, str]:
 
@@ -19,19 +21,24 @@ def generate_timestamp() -> tuple[str, str, str]:
 
     return actual_hour, generation_time, expiration_time
 
-def compare_time() -> bool:
 
-    actual_hour = int(time.time())
+def is_token_expired() -> bool:
+    current_timestamp = int(time.time())
     path = "service/time/actual_hour_epoch.txt"
 
     with open(path, 'r', encoding='utf-8') as file:
-        token_request_hour = int(file.read())
+        token_timestamp = int(file.read())
 
-    hours_difference = actual_hour - token_request_hour
+    print("Current timestamp:", current_timestamp)
+    print("Token timestamp:", token_timestamp)
 
-    if hours_difference > 0:
+    time_difference = token_timestamp - current_timestamp
+    print("Time difference in seconds:", time_difference)
 
-        return False # Token is valid yet
+    MAX_ALLOWED_DIFFERENCE = 43200  # 12 hours in seconds
+
+    # Return True if the token is expired (too old or too far in future)
+    if abs(time_difference) > MAX_ALLOWED_DIFFERENCE:
+        return True
     else:
-        
-        return True # Token isn't valid
+        return False

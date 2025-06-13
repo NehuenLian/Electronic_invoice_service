@@ -1,15 +1,14 @@
 from service.crypto.sign import get_binary_cms, sign_login_ticket_request
-from service.payload_builder.builder import (add_auth_to_payload,
-                                             build_afip_payload_from_sale,
-                                             get_sale_json)
+from service.json_management.convert_to_json import convert_zeep_object_to_json, save_json
+from service.payload_builder.builder import add_auth_to_payload
 from service.soap_handler.soap_client import fecae_solicitar, login_cms
-from service.time.time_management import compare_time
+from service.time.time_management import is_token_expired
+from service.utils.logger import logger
 from service.utils.verify_timestamp import timestamp_exists
 from service.xml_management.xml_builder import (
     build_login_ticket_request,
     extract_token_and_sign_from_loginticketresponse,
     parse_and_save_loginticketresponse, save_xml)
-from service.utils.logger import logger
 
 
 def request_access_token():
@@ -29,21 +28,18 @@ def request_access_token():
     parse_and_save_loginticketresponse(login_ticket_response)
     logger.info("loginTicketResponse parsed and saved successfully.")
 
-def generate_invoice():
+def generate_invoice() -> object:
     logger.info("Starting invoice generation process.")
     token, sign = extract_token_and_sign_from_loginticketresponse("loginTicketResponse.xml")
     logger.info("Token and sign successfully extracted from 'loginTicketResponse.xml'.")
 
-    sale_data = get_sale_json()
-
-    payload = build_afip_payload_from_sale(sale_data)
-    full_built_invoice  = add_auth_to_payload(payload, token, sign)
+    full_built_invoice  = add_auth_to_payload(token, sign)
 
     logger.info("Invoice payload built and signed successfully.")
     
-    returned_invoice = fecae_solicitar(full_built_invoice)
+    returned_cae = fecae_solicitar(full_built_invoice)
 
-    return returned_invoice
+    return returned_cae
 
 def main():
     logger.info("Checking if valid timestamp exists...")
@@ -51,18 +47,22 @@ def main():
         logger.info("Timestamp not found. Requesting new access token...")
         request_access_token()
         logger.info("Access token obtained. Proceeding to generate invoice...")
-        generate_invoice()
-        logger.info("Invoice generated and approved succesfully.")
+        returned_cae = generate_invoice()
+        json_file = convert_zeep_object_to_json(returned_cae)
+        save_json(json_file, "CAE_response.json")
     else:
-        if compare_time():
+        if is_token_expired():
             logger.info("Timestamp expired. Requesting new access token...")
             request_access_token()
             logger.info("Access token obtained. Proceeding to generate invoice...")
-            generate_invoice()
-            logger.info("Invoice generated and approved succesfully.")
+            returned_cae = generate_invoice()
+            json_file = convert_zeep_object_to_json(returned_cae)
+            save_json(json_file, "CAE_response.json")
         else:
             logger.info("Valid timestamp found. Proceeding to generate invoice...")
-            generate_invoice()
+            returned_cae = generate_invoice()
+            json_file = convert_zeep_object_to_json(returned_cae)
+            save_json(json_file, "CAE_response.json")
 
     logger.info("Invoice generated and approved successfully.")
 
