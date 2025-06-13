@@ -3,9 +3,9 @@ from service.json_management.convert_to_json import convert_zeep_object_to_dict
 from service.payload_builder.builder import add_auth_to_payload
 from service.soap_handler.soap_client import fecae_solicitar, login_cms
 from service.time.time_management import is_token_expired
+from service.utils.convert_model_to_dict import convert_pydantic_model_to_dict
 from service.utils.logger import logger
 from service.utils.verify_timestamp import timestamp_exists
-from service.utils.convert_model_to_dict import convert_pydantic_model_to_dict
 from service.xml_management.xml_builder import (
     build_login_ticket_request,
     extract_token_and_sign_from_loginticketresponse,

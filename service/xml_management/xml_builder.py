@@ -3,9 +3,7 @@ import os
 from lxml import etree
 
 from service.time.time_management import generate_timestamp
-
 from service.utils.logger import logger
-
 
 
 def build_login_ticket_request():

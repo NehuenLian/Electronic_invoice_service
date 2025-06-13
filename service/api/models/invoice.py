@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+
 class AlicIva(BaseModel):
     Id: int
     BaseImp: float
