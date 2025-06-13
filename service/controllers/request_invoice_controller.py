@@ -1,5 +1,5 @@
 from service.crypto.sign import get_binary_cms, sign_login_ticket_request
-from service.json_management.convert_to_json import convert_zeep_object_to_dict
+from service.cae_structure_management.convert_to_dict import convert_zeep_object_to_dict
 from service.payload_builder.builder import add_auth_to_payload
 from service.soap_handler.soap_client import fecae_solicitar, login_cms
 from service.time.time_management import is_token_expired
