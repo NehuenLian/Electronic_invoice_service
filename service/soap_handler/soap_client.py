@@ -1,7 +1,6 @@
-from lxml import etree
-from requests import Session
 from zeep import Client
-from zeep.transports import Transport
+
+from service.utils.logger import logger
 
 
 def login_cms(b64_cms: str) -> str:
@@ -13,13 +12,11 @@ def login_cms(b64_cms: str) -> str:
     return login_ticket_response
 
 def fecae_solicitar(full_built_invoice: dict) -> dict:
-
+    logger.debug(f"full_built_invoice in fecae_solicitar: {full_built_invoice}")
     afip_wsdl = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx?WSDL"
 
     client = Client(wsdl=afip_wsdl)
 
-    response = client.service.FECAESolicitar(full_built_invoice ['Auth'], full_built_invoice ['FeCAEReq'])
+    response_cae = client.service.FECAESolicitar(full_built_invoice ['Auth'], full_built_invoice ['FeCAEReq'])
 
-    print(response)
-    print(type(response))
-    return response
+    return response_cae

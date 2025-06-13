@@ -1,4 +1,3 @@
-import base64
 import os
 
 from lxml import etree
@@ -25,7 +24,7 @@ def build_login_ticket_request():
 
 def parse_and_save_loginticketresponse(login_ticket_response: str):
 
-    root = etree.fromstring(login_ticket_response)
+    root = etree.fromstring(login_ticket_response.encode("utf-8"))
     header = etree.SubElement(root, "header")
     source = etree.SubElement(header, "source")
     destination = etree.SubElement(header, "destination")
