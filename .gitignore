@@ -17,6 +17,3 @@ __pycache__/
 
 # Ignore actual_hour_epoch.txt
 actual_hour_epoch.txt
-
-# Ignore CAE_response.json
-CAE_response.json
