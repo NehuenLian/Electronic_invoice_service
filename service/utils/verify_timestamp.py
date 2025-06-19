@@ -13,3 +13,13 @@ def timestamp_exists() -> bool:
     else:
         logger.debug("Timestamp not exists")
         return  False
+
+def login_ticket_response_exists() -> bool:
+    xml_path = "service/xml_management/loginTicketResponse.xml"
+
+    if os.path.exists(xml_path):
+        logger.debug("loginTicketResponse exists")
+        return True
+    else:
+        logger.debug("loginTicketResponse not exists")
+        return False
