@@ -72,18 +72,18 @@ def is_expiration_time_reached():
     
     logger.debug("Verifying if <expirationTime> expired.")
 
-    _, actual_hour_epoch, _ = generate_timestamp() # Obtiene el epoch actual, ignorando los otros valores ya que es una funcion auxiliar
-    baires_tz = ZoneInfo("America/Argentina/Buenos_Aires") # Saca la zona horaria 
+    _, actual_hour_epoch, _ = generate_timestamp()
+    baires_tz = ZoneInfo("America/Argentina/Buenos_Aires")
 
-    path = f"service/xml_management/loginTicketRequest" # Path del xml del que se va a extraer el string con la hora para comparar con la actual
+    path = f"service/xml_management/loginTicketRequest"
     tree = etree.parse(path)
     root = tree.getroot()
-    expiration_time_label = root.find(".//expirationTime") # Etiqueta a buscar
-    expiration_time_str = expiration_time_label.text # Se convierte a string la etiqueta obtenida
+    expiration_time_label = root.find(".//expirationTime")
+    expiration_time_str = expiration_time_label.text
 
-    expiration_dt_naive = datetime.strptime(expiration_time_str, "%Y-%m-%dT%H:%M:%S") # Se convierte el string de la hora a un objeto datetime
-    expiration_dt = expiration_dt_naive.replace(tzinfo=baires_tz) # Se le agrega la zona horaria al objeto datetime
-    expiration_epoch = int(expiration_dt.timestamp()) # Se convierte el objeto datetime a epoch/entero
+    expiration_dt_naive = datetime.strptime(expiration_time_str, "%Y-%m-%dT%H:%M:%S")
+    expiration_dt = expiration_dt_naive.replace(tzinfo=baires_tz)
+    expiration_epoch = int(expiration_dt.timestamp())
 
     if actual_hour_epoch >= expiration_epoch:
         return True
