@@ -5,7 +5,7 @@ from service.soap_handler.soap_client import fecae_solicitar, login_cms
 from service.time.time_management import is_token_expired
 from service.utils.convert_model_to_dict import convert_pydantic_model_to_dict
 from service.utils.logger import logger
-from service.utils.verify_timestamp import timestamp_exists
+from service.utils.verify_timestamp import timestamp_exists, login_ticket_response_exists
 from service.xml_management.xml_builder import (
     build_login_ticket_request,
     extract_token_and_sign_from_loginticketresponse,
@@ -26,12 +26,15 @@ def request_access_token():
 def generate_invoice(parsed_data: dict) -> dict:
 
     logger.info("Generating invoice...")
-    token, sign = extract_token_and_sign_from_loginticketresponse("loginTicketResponse.xml")
-    full_built_invoice  = add_auth_to_payload(parsed_data, token, sign)
-    returned_cae = fecae_solicitar(full_built_invoice)
-    logger.info("Invoice generated.")
+    if login_ticket_response_exists:
+        token, sign = extract_token_and_sign_from_loginticketresponse("loginTicketResponse.xml")
+        full_built_invoice  = add_auth_to_payload(parsed_data, token, sign)
+        returned_cae = fecae_solicitar(full_built_invoice)
+        logger.info("Invoice generated.")
 
-    return returned_cae
+        return returned_cae
+    else:
+        logger.error("There is no loginTicketResponse.xml file because an error in request_access_token")
 
 def request_invoice_controller(parsed_data: dict) -> dict:
 
@@ -60,4 +63,3 @@ def request_invoice_controller(parsed_data: dict) -> dict:
             CAE_response = convert_zeep_object_to_dict(returned_cae)
 
             return CAE_response
-
