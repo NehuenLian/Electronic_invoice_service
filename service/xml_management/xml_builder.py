@@ -1,12 +1,12 @@
 import os
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
 from lxml import etree
 
+from service.exceptions import loginTicketResponseNotFound
 from service.time.time_management import generate_timestamp
 from service.utils.logger import logger
-
-from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo
 
 
 def build_login_ticket_request():
@@ -25,8 +25,6 @@ def build_login_ticket_request():
     expiration_time_label.text = str(expiration_time)
     service.text = "wsfe"
 
-    logger.debug("loginTicketRequest.xml was successfully built.")
-
     return root
 
 def parse_and_save_loginticketresponse(login_ticket_response: str):
@@ -43,16 +41,9 @@ def parse_and_save_loginticketresponse(login_ticket_response: str):
     token = etree.SubElement(credentials, "token")
     sign = etree.SubElement(credentials, "sign")
 
-    logger.debug("loginTicketResponse.xml was successfully built.")
-
-    logger.debug("Renovating... loginTicketResponse.xml")
     save_xml(root, "loginTicketResponse.xml")
 
-    logger.debug("loginTicketResponse.xml saved in 'xml_management/' folder.")
-
 def extract_token_and_sign_from_loginticketresponse(xml_name: str) -> tuple[str, str]:
-
-    logger.debug("Extracting token and sign from loginTicketResponse.xml...")
 
     path = f"service/xml_management/{xml_name}"
     tree = etree.parse(path)
@@ -64,25 +55,25 @@ def extract_token_and_sign_from_loginticketresponse(xml_name: str) -> tuple[str,
     token = token_label.text
     sign = sign_label.text
 
-    logger.debug("Token and Sign obtained successfully.")
-
     return token, sign
 
 def is_expiration_time_reached():
-    
-    logger.debug("Verifying if <expirationTime> expired.")
 
-    _, actual_hour_epoch, _ = generate_timestamp()
+    _, actual_hour_str, _ = generate_timestamp()
     baires_tz = ZoneInfo("America/Argentina/Buenos_Aires")
 
-    path = f"service/xml_management/loginTicketRequest"
+    actual_dt = datetime.strptime(actual_hour_str, "%Y-%m-%dT%H:%M:%S")
+    actual_dt = actual_dt.replace(tzinfo=baires_tz)
+    actual_hour_epoch = int(actual_dt.timestamp())
+
+    path = f"service/xml_management/loginTicketRequest.xml"
     tree = etree.parse(path)
     root = tree.getroot()
     expiration_time_label = root.find(".//expirationTime")
     expiration_time_str = expiration_time_label.text
 
-    expiration_dt_naive = datetime.strptime(expiration_time_str, "%Y-%m-%dT%H:%M:%S")
-    expiration_dt = expiration_dt_naive.replace(tzinfo=baires_tz)
+    expiration_dt = datetime.strptime(expiration_time_str, "%Y-%m-%dT%H:%M:%S")
+    expiration_dt = expiration_dt.replace(tzinfo=baires_tz)
     expiration_epoch = int(expiration_dt.timestamp())
 
     if actual_hour_epoch >= expiration_epoch:
