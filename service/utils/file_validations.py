@@ -12,7 +12,7 @@ def timestamp_exists() -> bool:
         return  False
     
 def login_ticket_request_exists() -> bool:
-    xml_path = "service/xml_management/loginTicketRequest.xml"
+    xml_path = "service/xml_management/xml_files/loginTicketRequest.xml"
 
     if os.path.exists(xml_path):
         return True
@@ -20,7 +20,7 @@ def login_ticket_request_exists() -> bool:
         return False
     
 def login_ticket_response_exists() -> bool:
-    xml_path = "service/xml_management/loginTicketResponse.xml"
+    xml_path = "service/xml_management/xml_files/loginTicketResponse.xml"
 
     if os.path.exists(xml_path):
         return True
