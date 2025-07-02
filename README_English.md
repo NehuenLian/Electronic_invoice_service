@@ -26,23 +26,26 @@ Implement a web service, built from scratch in Python, that performs cryptograph
 Here is the main directory layout of the INVOICE_SERVICE project:
 
 ```text
-INVOICE_SERVICE/
-├── service/
-│   ├── payload_builder/
-│   │   ├── __init__.py
-│   │   └── builder.py
-│   ├── certificates/
-│   ├── crypto/
-│   ├── soap_handler/
-│   ├── time/
-│   │   ├── __init__.py
-│   │   └── time_management.py
-│   ├── xml_management/
-│   └── exceptions.py
-├── main.py
-├── .env
-├── requirements.txt
-└── README.md
+INVOICE_SERVICE  
+├── __pycache__  
+├── service  
+│   ├── __pycache__  
+│   ├── api  
+│   ├── cae_structure_management  
+│   ├── certificates  
+│   ├── controllers  
+│   ├── crypto  
+│   ├── payload_builder  
+│   ├── soap_handler  
+│   ├── time  
+│   ├── utils  
+│   └── xml_management  
+├── exceptions.py  
+├── .gitignore  
+├── main.py  
+├── README_English.md  
+├── README.md  
+└── requirements.txt
 ```
 
 ---
