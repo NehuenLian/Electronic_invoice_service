@@ -45,7 +45,7 @@ def parse_and_save_loginticketresponse(login_ticket_response: str):
 
 def extract_token_and_sign_from_loginticketresponse(xml_name: str) -> tuple[str, str]:
 
-    path = f"service/xml_management/{xml_name}"
+    path = f"service/xml_management/xml_files/{xml_name}"
     tree = etree.parse(path)
     root = tree.getroot()
 
@@ -57,7 +57,9 @@ def extract_token_and_sign_from_loginticketresponse(xml_name: str) -> tuple[str,
 
     return token, sign
 
-def is_expiration_time_reached():
+def is_expired(xml_name: str) -> bool:
+
+    logger.debug(f"Running is_expired for {xml_name}")
 
     _, actual_hour_str, _ = generate_timestamp()
     baires_tz = ZoneInfo("America/Argentina/Buenos_Aires")
@@ -66,7 +68,7 @@ def is_expiration_time_reached():
     actual_dt = actual_dt.replace(tzinfo=baires_tz)
     actual_hour_epoch = int(actual_dt.timestamp())
 
-    path = f"service/xml_management/loginTicketRequest.xml"
+    path = f"service/xml_management/xml_files/{xml_name}"
     tree = etree.parse(path)
     root = tree.getroot()
     expiration_time_label = root.find(".//expirationTime")
@@ -83,7 +85,8 @@ def is_expiration_time_reached():
 
 def save_xml(root, xml_name):
     
-    path = f"service/xml_management/{xml_name}"
+    path = f"service/xml_management/xml_files/{xml_name}"
     os.makedirs(os.path.dirname(path), exist_ok=True)
     tree = etree.ElementTree(root)
     tree.write(path, pretty_print=True, xml_declaration=True, encoding="UTF-8")
+    logger.info(f"{xml_name} successfully saved.")
