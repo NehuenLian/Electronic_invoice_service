@@ -6,3 +6,5 @@ This folder contains the .xml files needed to send information to the web servic
 - loginTicketResponse.xml
 
 For security reasons, these files are excluded from the repository using `.gitignore`.
+
+⚠️ **Never upload these files to GitHub.**
