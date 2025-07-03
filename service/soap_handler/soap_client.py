@@ -30,8 +30,9 @@ def login_cms(b64_cms: str) -> str:
 
     except Fault as e:
         logger.debug(f"SOAP FAULT in login_cms: {e}")
-        # TODO: This needs to be handled in a sofisticate way. Verify '  "Errors": {"Err":[{...}]}  ' in the response.
-    
+        # TODO: This needs to be handled in a sophisticated way.  
+        # Verify the presence of '"Errors": {"Err": [{...}]}' in the response.
+
     except Exception as e:
         logger.error(f"General exception in login_cms: {e}")
         raise
@@ -57,7 +58,8 @@ def fecae_solicitar(full_built_invoice: dict) -> dict:
 
     except Fault as e:
         logger.debug(f"SOAP FAULT in fecae_solicitar: {e}")
-        # TODO: This needs to be handled in a sofisticate way. Verify '  "Errors": {"Err":[{...}]}  ' in the response.
+        # TODO: This needs to be handled in a sophisticated way.  
+        # Verify the presence of '"Errors": {"Err": [{...}]}' in the response.
 
     except Exception as e:
         logger.error(f"General exception in fecae_solicitar: {e}")
