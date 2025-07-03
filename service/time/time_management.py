@@ -1,17 +1,18 @@
 import os
 import time
-from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo
+from datetime import datetime, timedelta, timezone
 
 from service.utils.logger import logger
 
 
 def generate_timestamp() -> tuple[str, str, str]:
+    
+    utc_now = datetime.now(timezone.utc)
 
-    baires_tz = ZoneInfo("America/Argentina/Buenos_Aires")
-    actual_hour = int(time.time())
-    generation_time = datetime.now(baires_tz).strftime("%Y-%m-%dT%H:%M:%S")
-    expiration_time = (datetime.now(baires_tz) + timedelta(minutes=10)).strftime("%Y-%m-%dT%H:%M:%S")
+    actual_hour = int(utc_now.timestamp())
+
+    generation_time = utc_now.strftime("%Y-%m-%dT%H:%M:%SZ")
+    expiration_time = (utc_now + timedelta(minutes=10)).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     path = "service/time/actual_hour_epoch.txt"
     os.makedirs(os.path.dirname(path), exist_ok=True)

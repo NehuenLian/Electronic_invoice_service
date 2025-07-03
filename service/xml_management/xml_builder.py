@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
 from lxml import etree
@@ -58,14 +58,11 @@ def extract_token_and_sign_from_loginticketresponse(xml_name: str) -> tuple[str,
 
 def is_expired(xml_name: str) -> bool:
 
-    logger.debug(f"Running is_expired for {xml_name}")
+    logger.debug(f"Running is_expired() function for {xml_name}")
 
     _, actual_hour_str, _ = generate_timestamp()
-    baires_tz = ZoneInfo("America/Argentina/Buenos_Aires")
 
-    actual_dt = datetime.strptime(actual_hour_str, "%Y-%m-%dT%H:%M:%S")
-    actual_dt = actual_dt.replace(tzinfo=baires_tz)
-    actual_hour_epoch = int(actual_dt.timestamp())
+    actual_dt = datetime.strptime(actual_hour_str, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
 
     path = f"service/xml_management/xml_files/{xml_name}"
     tree = etree.parse(path)
@@ -73,11 +70,9 @@ def is_expired(xml_name: str) -> bool:
     expiration_time_label = root.find(".//expirationTime")
     expiration_time_str = expiration_time_label.text
 
-    expiration_dt = datetime.strptime(expiration_time_str, "%Y-%m-%dT%H:%M:%S")
-    expiration_dt = expiration_dt.replace(tzinfo=baires_tz)
-    expiration_epoch = int(expiration_dt.timestamp())
+    expiration_dt = datetime.strptime(expiration_time_str, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
 
-    if actual_hour_epoch >= expiration_epoch:
+    if actual_dt >= expiration_dt:
         return True
     else:
         return False
