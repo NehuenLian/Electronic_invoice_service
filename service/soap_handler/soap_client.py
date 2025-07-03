@@ -1,21 +1,19 @@
 from requests.exceptions import \
     ConnectionError  # Zeep uses requests behind it.
 from service.utils.logger import logger
-from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fixed, before_sleep
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fixed, before_sleep_log
 from zeep import Client
 from zeep.exceptions import Fault, TransportError
 from builtins import ConnectionResetError
+import logging
 
-def log_before_retry(retry_state):
-    exc = retry_state.outcome.exception()
-    logger.warning(f"Error {exc}, retrying...")
 
 # Implement retries with tenacity only for these Exceptions.
 @retry(
         retry=retry_if_exception_type(( ConnectionResetError, ConnectionError, TransportError )),
         stop=stop_after_attempt(3),
         wait=wait_fixed(0.5),
-        before_sleep=log_before_retry,
+        before_sleep=before_sleep_log(logger, logging.WARNING),
     )
 def login_cms(b64_cms: str) -> str:
 
@@ -43,7 +41,7 @@ def login_cms(b64_cms: str) -> str:
         retry=retry_if_exception_type(( ConnectionResetError, ConnectionError, TransportError )),
         stop=stop_after_attempt(3),
         wait=wait_fixed(0.5),
-        before_sleep=log_before_retry,
+        before_sleep=before_sleep_log(logger, logging.WARNING),
     )
 def fecae_solicitar(full_built_invoice: dict) -> dict:
 
