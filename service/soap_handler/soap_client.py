@@ -25,7 +25,8 @@ def login_cms(b64_cms: str) -> str:
     try:
         client = Client(wsdl=afip_wsdl)
         login_ticket_response = client.service.loginCms(b64_cms)
-
+        logger.info("CMS login request to AFIP ended successfully.")
+        
         return login_ticket_response
 
     except Fault as e:
