@@ -20,25 +20,3 @@ def generate_timestamp() -> tuple[str, str, str]:
         file.write(str(actual_hour))
 
     return actual_hour, generation_time, expiration_time
-
-
-def is_token_expired() -> bool:
-    
-    current_timestamp = int(time.time())
-    path = "service/time/actual_hour_epoch.txt"
-
-    with open(path, 'r', encoding='utf-8') as file:
-        token_timestamp = int(file.read())
-
-    current_timestamp_test = current_timestamp + 43200 # For development: Advance the time by 12 hours to test the token renewal. 
-                                                        # current_timestamp_test is used instead of current_timestamp when subtracting.
-
-    time_difference = token_timestamp - current_timestamp
-
-    MAX_ALLOWED_DIFFERENCE = 43200  # 12 hours in seconds
-
-    # Return True if the token is expired (too old or too far in future)
-    if abs(time_difference) > MAX_ALLOWED_DIFFERENCE:
-        return True
-    else:
-        return False
