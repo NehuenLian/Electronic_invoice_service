@@ -1,11 +1,13 @@
+import logging
+from builtins import ConnectionResetError
+
 from requests.exceptions import \
     ConnectionError  # Zeep uses requests behind it.
 from service.utils.logger import logger
-from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fixed, before_sleep_log
+from tenacity import (before_sleep_log, retry, retry_if_exception_type,
+                      stop_after_attempt, wait_fixed)
 from zeep import Client
 from zeep.exceptions import Fault, TransportError
-from builtins import ConnectionResetError
-import logging
 
 
 # Implement retries with tenacity only for these Exceptions.
