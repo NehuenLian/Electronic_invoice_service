@@ -1,6 +1,6 @@
 import logging
 from builtins import ConnectionResetError
-
+from service.soap_handler.analize_response import response_has_errors, find_error
 from requests.exceptions import \
     ConnectionError  # Zeep uses requests behind it.
 from service.utils.logger import logger
@@ -26,7 +26,10 @@ def login_cms(b64_cms: str) -> str:
         client = Client(wsdl=afip_wsdl)
         login_ticket_response = client.service.loginCms(b64_cms)
         logger.info("CMS login request to AFIP ended successfully.")
-        
+
+        if response_has_errors():
+            find_error()
+            
         return login_ticket_response
 
     except Fault as e:
@@ -54,6 +57,9 @@ def fecae_solicitar(full_built_invoice: dict) -> dict:
     try:
         client = Client(wsdl=afip_wsdl)
         response_cae = client.service.FECAESolicitar(full_built_invoice['Auth'], full_built_invoice['FeCAEReq'])
+
+        if response_has_errors():
+            find_error()
 
         return response_cae
 
