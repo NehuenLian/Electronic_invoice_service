@@ -2,3 +2,4 @@ lxml==5.4.0
 zeep==4.3.1
 fastapi==0.115.12
 pydantic==2.11.5
+tenacity==9.1.2
