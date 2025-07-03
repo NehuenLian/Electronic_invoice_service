@@ -4,7 +4,6 @@ from zoneinfo import ZoneInfo
 
 from lxml import etree
 
-from service.exceptions import loginTicketResponseNotFound
 from service.time.time_management import generate_timestamp
 from service.utils.logger import logger
 
