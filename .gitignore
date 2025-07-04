@@ -14,6 +14,3 @@ __pycache__/
 
 # Ignore cms files
 *.cms
-
-# Ignore actual_hour_epoch.txt
-actual_hour_epoch.txt
