@@ -15,3 +15,9 @@ def convert_zeep_object_to_dict(returned_cae: object) -> dict:
     CAE_response = serialize_object(returned_cae)
     logger.debug("Zeep object converted to dict.")
     return CAE_response
+
+
+def convert_pydantic_model_to_dict(sale_data: object) -> dict:
+    # Convert pydantic model object to dict
+    parsed_data = sale_data.model_dump()
+    return parsed_data
