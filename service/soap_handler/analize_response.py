@@ -17,7 +17,7 @@ def response_has_errors() -> bool:
     response_json_dict = json.loads(response_json)
     
     if response_json_dict['Errors']:
-        print(f"AAAAAAAA {response_json_dict['Errors']}")
+        
         logger.info("Errors identified in the response.")
         return True
     
