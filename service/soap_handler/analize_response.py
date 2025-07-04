@@ -1,10 +1,14 @@
 import json
 from service.utils.logger import logger
 
+
+# Dictionary of known errors.
+# Format: {Error code: Error description}
 errors = {
     10016 : "El numero o fecha del comprobante no se corresponde con el proximo a autorizar. Consultar metodo FECompUltimoAutorizado.",
 }
 
+# Manejar si es none tambien
 def response_has_errors() -> bool:
 
     with open("CAE_response.json", "r", encoding="utf-8") as file:
@@ -13,6 +17,7 @@ def response_has_errors() -> bool:
     response_json_dict = json.loads(response_json)
     
     if response_json_dict['Errors']:
+        print(f"AAAAAAAA {response_json_dict['Errors']}")
         logger.info("Errors identified in the response.")
         return True
     
