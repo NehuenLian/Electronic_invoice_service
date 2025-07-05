@@ -1,14 +1,13 @@
-from service.cae_structure_management.convert_to_dict import \
-    convert_zeep_object_to_dict
 from service.crypto.sign import get_binary_cms, sign_login_ticket_request
 from service.payload_builder.builder import add_auth_to_payload
 from service.soap_handler.soap_client import fecae_solicitar, login_cms
-from service.utils.file_validations import (login_ticket_request_exists,
-                                            login_ticket_response_exists)
+from service.utils.convert_to_dict import convert_zeep_object_to_dict
+from service.utils.file_validations import xml_exists
 from service.utils.logger import logger
 from service.xml_management.xml_builder import (
     build_login_ticket_request,
-    extract_token_and_sign_from_loginticketresponse, parse_and_save_loginticketresponse, save_xml, is_expired)
+    extract_token_and_sign_from_loginticketresponse, is_expired,
+    parse_and_save_loginticketresponse, save_xml)
 
 
 def generate_token_from_scratch():
@@ -47,10 +46,11 @@ def request_invoice_controller(parsed_data: dict) -> dict:
     logger.info("Starting the invoice request process...")
     logger.info("Checking if loginTicketResponse exists...")
     
-    if login_ticket_response_exists():
+    if xml_exists("loginTicketResponse.xml"):
         logger.info("loginTicketResponse exists.")
         logger.info("Checking if the token has expired...")
         is_token_expired = is_expired("loginTicketRequest.xml")
+
         if is_token_expired:
             logger.info("The token has expired")
             generate_token_from_scratch()
@@ -63,7 +63,9 @@ def request_invoice_controller(parsed_data: dict) -> dict:
     else:
         logger.info("loginTicketResponse does not exist.")
         logger.info("Checking if loginTicketRequest exists...")
-        if login_ticket_request_exists():
+
+        if xml_exists("loginTicketRequest.xml"):
+
             logger.info("loginTicketRequest exists.")
             logger.info("Checking if the <expirationTime> of loginTicketRequest has expired...")
             is_expiration_time_reached = is_expired("loginTicketRequest.xml")
@@ -75,6 +77,7 @@ def request_invoice_controller(parsed_data: dict) -> dict:
 
             else:
                 logger.info("<expirationTime> is still valid.")
+
                 logger.info("Checking if the token has expired...")
                 is_token_expired = is_expired("loginTicketRequest.xml")
                 if is_token_expired:
@@ -94,4 +97,3 @@ def request_invoice_controller(parsed_data: dict) -> dict:
             CAE_response = generate_invoice(parsed_data)
         
     return CAE_response
-
