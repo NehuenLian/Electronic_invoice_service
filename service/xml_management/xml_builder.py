@@ -4,7 +4,7 @@ from zoneinfo import ZoneInfo
 
 from lxml import etree
 
-from service.time.time_management import generate_timestamp
+from service.time.time_management import generate_timestamp, generate_ntp_timestamp
 from service.utils.logger import logger
 
 
@@ -17,7 +17,7 @@ def build_login_ticket_request():
     expiration_time_label = etree.SubElement(header, "expirationTime")
     service = etree.SubElement(root, "service")
 
-    actual_hour, generation_time, expiration_time = generate_timestamp()
+    actual_hour, generation_time, expiration_time = generate_ntp_timestamp()
 
     unique_id.text = str(actual_hour)
     generation_time_label.text = str(generation_time)
@@ -25,6 +25,15 @@ def build_login_ticket_request():
     service.text = "wsfe"
 
     return root
+
+def build_comp_ultimo_autorizado():
+
+    """
+    This builder function corresponds to fe_comp_ultimo_autorizado (FECompUltimoAutorizado) Service.
+    Te function build the necessary .xml file for this service.
+    """
+
+    pass
 
 def parse_and_save_loginticketresponse(login_ticket_response: str):
 
@@ -60,9 +69,9 @@ def is_expired(xml_name: str) -> bool:
 
     logger.debug(f"Running is_expired() function for {xml_name}")
 
-    _, actual_hour_str, _ = generate_timestamp()
+    _, actual_hour, _ = generate_ntp_timestamp()
 
-    actual_dt = datetime.strptime(actual_hour_str, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+    actual_dt = datetime.strptime(str(actual_hour), "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
 
     path = f"service/xml_management/xml_files/{xml_name}"
     tree = etree.parse(path)
