@@ -1,29 +1,20 @@
-# Proyecto: API de facturación para POS con integración AFIP
+# Servicio Web de Facturación para Punto de Venta con Integración a la Agencia Tributaria Argentina
 
-## Descripción del proyecto
+Este proyecto es un servicio web que actúa como middleware entre sistemas POS locales y AFIP/ARCA (organismos fiscales de Argentina). Recibe comprobantes en formato JSON, los transforma a XML compatible con los Web Services de AFIP/ARCA, envía la solicitud vía SOAP, procesa la respuesta y devuelve el resultado al POS en formato JSON. También resuelve de forma automática ciertos errores comunes de facturación. El objetivo es simplificar el cumplimiento fiscal desde aplicaciones de escritorio.
 
-Este proyecto es un servicio web que actúa como middleware entre sistemas POS locales y la AFIP/ARCA. Recibe comprobantes en formato JSON, los transforma a XML compatible con el WS de AFIP/ARCA, envía la solicitud vía SOAP, procesa la respuesta y la devuelve al POS en JSON. Automatiza la generación de tickets impresos y PDFs, simplificando el cumplimiento fiscal desde aplicaciones de escritorio.
+## Tech Stack
 
----
+- **Lenguaje:** Python  
+- **Criptografía:** Uso directo de OpenSSL con `subprocess`  
+- **Comunicación con AFIP:** XML + SOAP  
+- **Comunicación con Punto de Venta:** FastAPI  
+- **Deploy:** Docker  
 
-## Objetivo General
+## ¿Stateless?
 
-Implementar un servicio web, creado desde cero en Python, que realice tareas criptográficas y se comunique con el servicio web de la entidad tributaria (ARCA) para emitir tickets fiscales al consumidor final, cumpliendo con las normativas vigentes de facturación electrónica.
+Parcialmente. El servicio no almacena información transaccional ni de estado entre solicitudes, salvo por el token de autenticación que persiste en memoria durante 12 horas (hasta que se necesite generar otro) y se reutiliza para todas las facturas emitidas en ese período.
 
----
-
-## Objetivos específicos
-
-- Automatizar la solicitud de token para autenticación.
-- Implementar correctamente los algoritmos criptográficos requeridos.
-- Firmar y enviar comprobantes electrónicos.
-- Validar la respuesta del servicio tributario y almacenar la información útil.
-
----
-
-## Estructura del proyecto
-
-Esta es la estructura pensada para este servicio de facturación:
+## Estructura del Proyecto
 
 ```text
 INVOICE_SERVICE  
@@ -33,7 +24,7 @@ INVOICE_SERVICE
 │   ├── controllers/
 │   ├── crypto/
 │   ├── payload_builder/
-│   ├── response_errors_handler/
+│   ├── error_handler/
 │   ├── soap_management/
 │   ├── time/
 │   ├── utils/
@@ -46,46 +37,40 @@ INVOICE_SERVICE
 └── requirements.txt
 ```
 
-## Requerimientos funcionales
+## Descripción de la arquitectura y los directorios
 
-1. El servicio debe verificar si el **token** vigente ha expirado antes de enviar una factura.
-2. Debe implementar **todos los procesos criptográficos requeridos por ARCA** usando claves, certificados y firmas digitales.
+### `api/`
+Contiene el endpoint POST que recibe los JSON con información de la venta y de la factura a construir antes de enviarla para su aprobación. También contiene los esquemas de Pydantic para la validación del JSON.
 
----
+### `certificates/`
+Contiene los certificados, claves privadas, CSRs y otros elementos criptográficos necesarios para firmar la solicitud del ticket de acceso.
 
-## Requerimientos no funcionales
+### `controllers/`
+Contiene controladores separados por servicio SOAP. Cada controlador maneja un servicio específico.
 
-1. El código fuente debe ser modular y fácilmente modificable, sin comprometer el despliegue.
+### `crypto/`
+Contiene el módulo que firma la solicitud del ticket de acceso utilizando los elementos de la carpeta `certificates`.
 
----
+### `payload_builder/`
+Contiene el módulo que arma y manipula los diccionarios (`dict`) que necesita la librería Zeep para consumir los servicios SOAP.
 
-## Tecnologías a utilizar
+### `error_handler/`
+Contiene una función que recibe códigos de error y redirige el procesamiento a controladores especializados que intentan resolver dichos errores de forma automática. Este módulo puede ampliarse a medida que se descubren nuevos tipos de errores.
 
-- **Lenguaje principal:** Python  
-- **Criptografía:** Uso directo de `openssl` mediante `subprocess`  
-- **Comunicación con AFIP:** XML + SOAP
-- **Comunicación con Punto de venta:** FastAPI
+### `soap_management/`
+Maneja la comunicación con los servicios SOAP de AFIP/ARCA y analiza las respuestas en busca de errores. Los errores suelen presentarse como un array al final de la respuesta.
 
----
+### `time/`
+Contiene funciones auxiliares para la gestión de fechas y horas.
 
-## Plan de trabajo
+### `utils/`
+Contiene funciones auxiliares generales: logger, validación de existencia, entre otras.
 
-1. **Investigación**  
-   Lectura detallada de la documentación oficial de ARCA sobre criptografía, autenticación y envío de comprobantes.
+### `xml_management/`
+Almacena los archivos XML necesarios para el funcionamiento del servicio y contiene todas las funciones necesarias para construir y manipular estos archivos.
 
-2. **Pruebas manuales en entorno sandbox**  
-   Ejecutar procesos manuales para verificar comprensión y funcionamiento del entorno.
-
-3. **Pruebas finales**  
-   Validación del script completo: firma, autenticación, envío, y recepción del XML aprobado.
-
----
-
-## Criterios de éxito
-
-1. El servicio es capaz de **firmar**, **enviar** un comprobante XML válido, y recibir una **respuesta aprobada** del servicio tributario, indicando que el comprobante fue aceptado.
-
----
+### `exceptions.py`
+Contiene las excepciones personalizadas del servicio.
 
 ## Flujo sugerido
 
