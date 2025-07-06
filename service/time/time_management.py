@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, timezone
 
 import ntplib
+
 from service.utils.logger import logger
 
 
