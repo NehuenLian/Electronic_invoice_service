@@ -1,0 +1,2 @@
+class NoErrorCodeFound(Exception):
+    pass
