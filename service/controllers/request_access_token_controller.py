@@ -1,5 +1,5 @@
 from service.crypto.sign import get_binary_cms, sign_login_ticket_request
-from service.soap_handler.soap_client import login_cms
+from service.soap_management.soap_client import login_cms
 from service.utils.logger import logger
 from service.xml_management.xml_builder import (
     build_login_ticket_request, parse_and_save_loginticketresponse, save_xml)
