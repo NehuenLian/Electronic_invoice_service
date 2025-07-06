@@ -1,10 +1,9 @@
 import os
 from datetime import datetime, timezone
-from zoneinfo import ZoneInfo
 
 from lxml import etree
 
-from service.time.time_management import generate_timestamp, generate_ntp_timestamp
+from service.time.time_management import generate_ntp_timestamp
 from service.utils.logger import logger
 
 
@@ -26,15 +25,6 @@ def build_login_ticket_request():
 
     return root
 
-def build_comp_ultimo_autorizado():
-
-    """
-    This builder function corresponds to fe_comp_ultimo_autorizado (FECompUltimoAutorizado) Service.
-    Te function build the necessary .xml file for this service.
-    """
-
-    pass
-
 def parse_and_save_loginticketresponse(login_ticket_response: str):
 
     root = etree.fromstring(login_ticket_response.encode("utf-8"))
@@ -51,7 +41,7 @@ def parse_and_save_loginticketresponse(login_ticket_response: str):
 
     save_xml(root, "loginTicketResponse.xml")
 
-def extract_token_and_sign_from_loginticketresponse(xml_name: str) -> tuple[str, str]:
+def extract_token_and_sign_from_xml(xml_name: str) -> tuple[str, str]:
 
     path = f"service/xml_management/xml_files/{xml_name}"
     tree = etree.parse(path)
@@ -86,7 +76,7 @@ def is_expired(xml_name: str) -> bool:
     else:
         return False
 
-def save_xml(root, xml_name):
+def save_xml(root, xml_name: str):
     
     path = f"service/xml_management/xml_files/{xml_name}"
     os.makedirs(os.path.dirname(path), exist_ok=True)
