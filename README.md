@@ -27,19 +27,17 @@ Esta es la estructura pensada para este servicio de facturación:
 
 ```text
 INVOICE_SERVICE  
-├── __pycache__  
 ├── service  
-│   ├── __pycache__  
-│   ├── api  
-│   ├── cae_structure_management  
-│   ├── certificates  
-│   ├── controllers  
-│   ├── crypto  
-│   ├── payload_builder  
-│   ├── soap_handler  
-│   ├── time  
-│   ├── utils  
-│   └── xml_management  
+│   ├── api/ 
+│   ├── certificates/
+│   ├── controllers/
+│   ├── crypto/
+│   ├── payload_builder/
+│   ├── response_errors_handler/
+│   ├── soap_management/
+│   ├── time/
+│   ├── utils/
+│   └── xml_management/
 ├── exceptions.py  
 ├── .gitignore  
 ├── main.py  
