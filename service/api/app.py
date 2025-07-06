@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from service.api.models.invoice import RootModel
 from service.controllers.request_invoice_controller import \
     request_invoice_controller
-from service.utils.convert_model_to_dict import convert_pydantic_model_to_dict
+from service.utils.convert_to_dict import convert_pydantic_model_to_dict
 from service.utils.logger import logger
 
 app = FastAPI()
