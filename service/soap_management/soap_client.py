@@ -10,6 +10,7 @@ from zeep import Client
 from zeep.exceptions import Fault, TransportError
 
 from service.utils.logger import logger
+from service.utils.wsdl_manager import get_login_cms_wsdl, get_wsfe_wsdl
 
 
 # Implement retries with tenacity only for these Exceptions.
@@ -22,7 +23,8 @@ from service.utils.logger import logger
 def login_cms(b64_cms: str) -> Optional[str]:
 
     logger.info("Starting CMS login request to AFIP")
-    afip_wsdl = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms?wsdl"
+
+    afip_wsdl = get_login_cms_wsdl()
 
     try:
         client = Client(wsdl=afip_wsdl)
@@ -51,7 +53,7 @@ def login_cms(b64_cms: str) -> Optional[str]:
 def fecae_solicitar(full_built_invoice: dict) -> Optional[dict]:
 
     logger.info(f"Generating invoice...")
-    afip_wsdl = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx?WSDL"
+    afip_wsdl = get_wsfe_wsdl()
 
     try:
         client = Client(wsdl=afip_wsdl)
@@ -79,7 +81,7 @@ def fecae_solicitar(full_built_invoice: dict) -> Optional[dict]:
 def fe_comp_ultimo_autorizado(auth: dict, ptovta: int, cbtetipo: int) -> Optional[dict]:
     
     logger.info(f"Consulting last authorized invoice...")
-    afip_wsdl = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx?WSDL"
+    afip_wsdl = get_wsfe_wsdl()
 
     try:
         client = Client(wsdl=afip_wsdl)
