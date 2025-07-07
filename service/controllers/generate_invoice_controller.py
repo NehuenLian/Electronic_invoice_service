@@ -13,7 +13,7 @@ def generate_invoice(parsed_data: dict) -> dict:
     logger.info("Generating invoice...")
     token, sign = extract_token_and_sign_from_xml("loginTicketResponse.xml")
     full_built_invoice = add_auth_to_payload(parsed_data, token, sign)
-
+    
     returned_cae = fecae_solicitar(full_built_invoice)
 
     logger.info("Verifying if the response has errors...")
