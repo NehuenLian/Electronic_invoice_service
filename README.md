@@ -70,7 +70,7 @@ Maneja la comunicación con los servicios SOAP de AFIP/ARCA y analiza las respue
 Contiene funciones auxiliares para la gestión de fechas y horas.
 
 ### `utils/`
-Contiene funciones auxiliares generales: logger, validación de existencia, entre otras.
+Contiene funciones auxiliares generales: logger, validación de existencias, entre otras.
 
 ### `xml_management/`
 Almacena los archivos XML necesarios para el funcionamiento del servicio y contiene todas las funciones necesarias para construir y manipular estos archivos.
@@ -307,6 +307,6 @@ El archivo `soap_client.py` contiene las consultas a 3 de los servicios SOAP de 
 
 Este proyecto está bajo la licencia [MIT](./LICENSE) (licencia permisiva de código abierto).
 
-Resumen: Podés usar, copiar, modificar y distribuir el software libremente, siempre incluyendo el aviso de copyright y sin garantías.
+Podés usar, copiar, modificar y distribuir el software libremente, siempre incluyendo el aviso de copyright y sin garantías.
 
 ---
