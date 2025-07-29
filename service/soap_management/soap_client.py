@@ -36,7 +36,9 @@ def login_cms(b64_cms: str) -> Optional[str]:
 
     except Fault as e:
         logger.debug(f"SOAP FAULT in login_cms: {e}")
-        # TODO: This needs to be handled in a sophisticated way.  
+        # SOAP faults usually occur due to coding errors or datatype issues.
+        # These errors should be handled and fixed by the developer
+        # according to how this code is being used.
 
     except Exception as e:
         logger.error(f"General exception in login_cms: {e}")
@@ -64,7 +66,9 @@ def fecae_solicitar(full_built_invoice: dict) -> Optional[dict]:
 
     except Fault as e:
         logger.debug(f"SOAP FAULT in fecae_solicitar: {e}")
-        # TODO: This needs to be handled in a sophisticated way.  
+        # SOAP faults usually occur due to coding errors or datatype issues.
+        # These errors should be handled and fixed by the developer
+        # according to how this code is being used.
 
     except Exception as e:
         logger.error(f"General exception in fecae_solicitar: {e}")
@@ -93,7 +97,9 @@ def fe_comp_ultimo_autorizado(auth: dict, ptovta: int, cbtetipo: int) -> Optiona
 
     except Fault as e:
         logger.debug(f"SOAP FAULT in fe_comp_ultimo_autorizado: {e}")
-        # TODO: This needs to be handled in a sophisticated way.  
+        # SOAP faults usually occur due to coding errors or datatype issues.
+        # These errors should be handled and fixed by the developer
+        # according to how this code is being used.
 
     except Exception as e:
         logger.error(f"General exception in fe_comp_ultimo_autorizado: {e}")

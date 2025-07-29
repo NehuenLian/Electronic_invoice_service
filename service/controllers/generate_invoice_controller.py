@@ -1,6 +1,6 @@
 from service.payload_builder.builder import add_auth_to_payload
 from service.response_errors_handler.error_handler import handle_error
-from service.soap_management.analize_response import (find_error_code,
+from service.soap_management.analyze_response import (find_error_code,
                                                       response_has_errors)
 from service.soap_management.soap_client import fecae_solicitar
 from service.utils.convert_to_dict import convert_zeep_object_to_dict
