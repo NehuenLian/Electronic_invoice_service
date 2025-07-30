@@ -4,7 +4,7 @@ from typing import Optional
 
 from requests.exceptions import \
     ConnectionError  # Zeep uses requests behind it.
-from tenacity import (after_log, retry, retry_if_exception_type,
+from tenacity import (before_sleep_log, retry, retry_if_exception_type,
                       stop_after_attempt, wait_fixed)
 from zeep import Client
 from zeep.exceptions import Fault, TransportError
@@ -18,7 +18,7 @@ from service.utils.wsdl_manager import get_login_cms_wsdl, get_wsfe_wsdl
         retry=retry_if_exception_type(( ConnectionResetError, ConnectionError, TransportError )),
         stop=stop_after_attempt(3),
         wait=wait_fixed(0.5),
-        before_sleep=after_log(logger.warning("Error in login_cms. Retrying..."), logging.WARNING),
+        before_sleep=before_sleep_log(logger, logging.WARNING),
     )
 def login_cms(b64_cms: str) -> Optional[str]:
 
@@ -50,7 +50,7 @@ def login_cms(b64_cms: str) -> Optional[str]:
         retry=retry_if_exception_type(( ConnectionResetError, ConnectionError, TransportError )),
         stop=stop_after_attempt(3),
         wait=wait_fixed(0.5),
-        before_sleep=after_log(logger.warning("Error in fecae_solicitar. Retrying..."), logging.WARNING),
+        before_sleep=before_sleep_log(logger, logging.WARNING),
     )
 def fecae_solicitar(full_built_invoice: dict) -> Optional[dict]:
 
@@ -80,7 +80,7 @@ def fecae_solicitar(full_built_invoice: dict) -> Optional[dict]:
         retry=retry_if_exception_type(( ConnectionResetError, ConnectionError, TransportError )),
         stop=stop_after_attempt(3),
         wait=wait_fixed(0.5),
-        before_sleep=after_log(logger.warning("Error in fe_comp_ultimo_autorizado. Retrying..."), logging.WARNING),
+        before_sleep=before_sleep_log(logger, logging.WARNING),
     )
 def fe_comp_ultimo_autorizado(auth: dict, ptovta: int, cbtetipo: int) -> Optional[dict]:
     
