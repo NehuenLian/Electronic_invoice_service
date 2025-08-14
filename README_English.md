@@ -1,4 +1,4 @@
-# Web Invoicing Service for Point of Sale with Integration to the Argentine Tax Agency
+# SOAP Web Invoicing Service for Point of Sale with Integration to the Argentine Tax Agency
 
 This system is a web service that acts as middleware between local POS systems and AFIP (Administración Federal de Ingresos Públicos) / ARCA (Customs Revenue and Control Agency), the tax authority in Argentina. It receives invoices in JSON format, transforms them into XML compatible with AFIP/ARCA Web Services, sends the request via SOAP, processes the response, and returns the result to the POS in JSON format. It also automatically handles certain common invoicing errors. The goal is to simplify tax compliance from desktop applications.
 
