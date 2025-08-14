@@ -180,6 +180,148 @@ The file `soap_client.py` contains calls to 3 of the AFIP/ARCA SOAP services (th
     - `cuit`: CUIT of the issuing company.
   
   This service is used to resolve error `10016` (see `service/response_errors_handler/error_handler.py`), by requesting the current invoice number to add it to the invoice to be approved after it was rejected with this error attached.
+
+---
+
+## Additional Considerations
+
+- **Access Ticket Persistence:**  
+  If the container or server where the service is deployed goes down, there is no issue with the access tickets (`loginTicketResponse.xml`). Upon restarting and receiving an invoicing request, the service will detect that the files are missing and automatically generate a new ticket.
+
+- **Flexible Deployment:**  
+  Using Docker is not mandatory. The service can run directly as a script or within any Python environment, as long as the input and output file formats are respected. The protection of credentials (tokens, certificates) is the responsibility of the user or environment administrator.
+
+### Full Lifecycle Flow Represented with Logs (Including Automatic Error Correction)
+
+```
+2025-08-14 15:17:36,584 - INFO - Starting the invoice request process...
+2025-08-14 15:17:36,584 - INFO - Checking if loginTicketResponse exists...
+2025-08-14 15:17:36,584 - INFO - loginTicketResponse exists.
+2025-08-14 15:17:36,584 - INFO - Checking if the token has expired...
+2025-08-14 15:17:36,584 - DEBUG - Running is_expired() function for loginTicketRequest.xml
+2025-08-14 15:17:36,584 - DEBUG - Consulting NTP for get the datetime...
+2025-08-14 15:17:36,622 - DEBUG - Datetime values: epoch: 1755195434 | gentime: 2025-08-14T18:17:14Z | exptime: 2025-08-14T18:27:14Z
+2025-08-14 15:17:36,627 - INFO - The token has expired
+2025-08-14 15:17:36,627 - DEBUG - Consulting NTP for get the datetime...
+2025-08-14 15:17:36,649 - DEBUG - Datetime values: epoch: 1755195434 | gentime: 2025-08-14T18:17:14Z | exptime: 2025-08-14T18:27:14Z
+2025-08-14 15:17:36,650 - INFO - loginTicketRequest.xml successfully saved.
+2025-08-14 15:17:36,650 - DEBUG - Signing loginTicketRequest.xml...
+2025-08-14 15:17:36,691 - DEBUG - loginTicketRequest.xml successfully signed.
+2025-08-14 15:17:36,691 - INFO - Starting CMS login request to AFIP
+2025-08-14 15:17:36,889 - INFO - CMS login request to AFIP ended successfully.
+2025-08-14 15:17:36,889 - DEBUG - login_ticket_response: <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<loginTicketResponse version="1.0">
+    <header>
+        <source>CN=wsaahomo, O=AFIP, C=AR, SERIALNUMBER=CUIT 44352675245</source>
+        <destination>SERIALNUMBER=CUIT 20123456789, CN=certificadodefinitivo</destination>
+        <uniqueId>3359896406</uniqueId>
+        <generationTime>2025-08-14T15:17:14.429-03:00</generationTime>
+        <expirationTime>2025-08-15T03:17:14.429-03:00</expirationTime>
+    </header>
+    <credentials>
+        <token>P...g==</token>
+        <sign>H...w=</sign>
+    </credentials>
+</loginTicketResponse>
+
+2025-08-14 15:17:36,890 - INFO - loginTicketResponse.xml successfully saved.
+2025-08-14 15:17:36,890 - INFO - Token generated.
+2025-08-14 15:17:36,890 - INFO - Generating invoice...
+2025-08-14 15:17:36,890 - DEBUG - Auth added to payload.
+2025-08-14 15:17:36,890 - INFO - Generating invoice...
+2025-08-14 15:17:37,215 - DEBUG - Response: {
+    'FeCabResp': {
+        'Cuit': 20123456789,
+        'PtoVta': 1,
+        'CbteTipo': 6,
+        'FchProceso': '20250814151718',
+        'CantReg': 1,
+        'Resultado': 'R',
+        'Reproceso': 'N'
+    },
+    'FeDetResp': {
+        'FECAEDetResponse': [
+            {
+                'Concepto': 1,
+                'DocTipo': 96,
+                'DocNro': 12345678,
+                'CbteDesde': 69,
+                'CbteHasta': 69,
+                'CbteFch': '20250728',
+                'Resultado': 'R',
+                'Observaciones': None,
+                'CAE': None,
+                'CAEFchVto': None
+            }
+        ]
+    },
+    'Events': None,
+    'Errors': {
+        'Err': [
+            {
+                'Code': 10016,
+                'Msg': 'El numero o fecha del comprobante no se corresponde con el proximo a autorizar. Consultar metodo FECompUltimoAutorizado.'
+            }
+        ]
+    }
+}
+2025-08-14 15:17:37,216 - INFO - Verifying if the response has errors...
+2025-08-14 15:17:37,216 - INFO - Errors identified in the response.
+2025-08-14 15:17:37,216 - INFO - Response has errors. Resolving...
+2025-08-14 15:17:37,217 - DEBUG - Error code: 10016
+2025-08-14 15:17:37,217 - DEBUG - Error message: El numero o fecha del comprobante no se corresponde con el proximo a autorizar. Consultar metodo FECompUltimoAutorizado.
+2025-08-14 15:17:37,217 - INFO - Starting invoice number synchronization.
+2025-08-14 15:17:37,217 - INFO - Consulting last authorized invoice...
+2025-08-14 15:17:37,458 - DEBUG - Response: {
+    'PtoVta': 1,
+    'CbteTipo': 6,
+    'CbteNro': 83,
+    'Errors': None,
+    'Events': None
+}
+2025-08-14 15:17:37,459 - INFO - Updated invoice with new number: 84
+2025-08-14 15:17:37,459 - INFO - Error resolved. Retrying invoice submission
+2025-08-14 15:17:37,459 - INFO - Generating invoice...
+2025-08-14 15:17:37,821 - DEBUG - Response: {
+    'FeCabResp': {
+        'Cuit': 20123456789,
+        'PtoVta': 1,
+        'CbteTipo': 6,
+        'FchProceso': '20250814151715',
+        'CantReg': 1,
+        'Resultado': 'R',
+        'Reproceso': 'N'
+    },
+    'FeDetResp': {
+        'FECAEDetResponse': [
+            {
+                'Concepto': 1,
+                'DocTipo': 96,
+                'DocNro': 12345678,
+                'CbteDesde': 84,
+                'CbteHasta': 84,
+                'CbteFch': '20250728',
+                'Resultado': 'R',
+                'Observaciones': {
+                    'Obs': [
+                        {
+                            'Code': 10016,
+                            'Msg': 'Campo CbteFch Debe estar comprendido  en el  rango  N-5 y N+5 siendo N la fecha de envio del pedido  de autorizacion para 1 - Productos'
+                        }
+                    ]
+                },
+                'CAE': None,
+                'CAEFchVto': None
+            }
+        ]
+    },
+    'Events': None,
+    'Errors': None
+}
+2025-08-14 15:17:37,822 - DEBUG - Zeep object converted to dict.
+2025-08-14 15:17:37,822 - INFO - Invoice generated.
+```
+
 ---
 
 ### Example of the structure that `fecae_solicitar(full_built_invoice)` should receive:
