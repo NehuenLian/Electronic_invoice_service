@@ -2,6 +2,14 @@
 
 This system is a web service that acts as middleware between local POS systems and AFIP (Administración Federal de Ingresos Públicos) / ARCA (Customs Revenue and Control Agency), the tax authority in Argentina. It receives invoices in JSON format, transforms them into XML compatible with AFIP/ARCA Web Services, sends the request via SOAP, processes the response, and returns the result to the POS in JSON format. It also automatically handles certain common invoicing errors. The goal is to simplify tax compliance from desktop applications.
 
+[![Python](https://img.shields.io/badge/python-3.11-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![lxml](https://img.shields.io/badge/lxml-5.4.0-orange)](https://pypi.org/project/lxml/)
+[![zeep](https://img.shields.io/badge/zeep-4.3.1-green)](https://pypi.org/project/zeep/)
+[![fastapi](https://img.shields.io/badge/fastapi-0.115.12-blueviolet)](https://fastapi.tiangolo.com/)
+[![pydantic](https://img.shields.io/badge/pydantic-2.11.5-red)](https://pypi.org/project/pydantic/)
+[![tenacity](https://img.shields.io/badge/tenacity-9.1.2-yellow)](https://pypi.org/project/tenacity/)
+[![ntplib](https://img.shields.io/badge/ntplib-0.4.0-lightgrey)](https://pypi.org/project/ntplib/)
+
 ## Tech Stack
 
 - **Language:** Python  
