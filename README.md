@@ -202,47 +202,47 @@ El archivo `soap_client.py` contiene las consultas a 3 de los servicios SOAP de 
 ### Flujo de vida completo representado con logs (y corrección automática de error incluida)
 
 ```
-2025-08-14 15:17:36,584 - INFO - Starting the invoice request process...
-2025-08-14 15:17:36,584 - INFO - Checking if loginTicketResponse exists...
-2025-08-14 15:17:36,584 - INFO - loginTicketResponse exists.
-2025-08-14 15:17:36,584 - INFO - Checking if the token has expired...
-2025-08-14 15:17:36,584 - DEBUG - Running is_expired() function for loginTicketRequest.xml
-2025-08-14 15:17:36,584 - DEBUG - Consulting NTP for get the datetime...
-2025-08-14 15:17:36,622 - DEBUG - Datetime values: epoch: 1755195434 | gentime: 2025-08-14T18:17:14Z | exptime: 2025-08-14T18:27:14Z
-2025-08-14 15:17:36,627 - INFO - The token has expired
-2025-08-14 15:17:36,627 - DEBUG - Consulting NTP for get the datetime...
-2025-08-14 15:17:36,649 - DEBUG - Datetime values: epoch: 1755195434 | gentime: 2025-08-14T18:17:14Z | exptime: 2025-08-14T18:27:14Z
-2025-08-14 15:17:36,650 - INFO - loginTicketRequest.xml successfully saved.
-2025-08-14 15:17:36,650 - DEBUG - Signing loginTicketRequest.xml...
-2025-08-14 15:17:36,691 - DEBUG - loginTicketRequest.xml successfully signed.
-2025-08-14 15:17:36,691 - INFO - Starting CMS login request to AFIP
-2025-08-14 15:17:36,889 - INFO - CMS login request to AFIP ended successfully.
-2025-08-14 15:17:36,889 - DEBUG - login_ticket_response: <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+2025-08-16 14:49:56,869 - INFO - Starting the invoice request process...
+2025-08-16 14:49:56,870 - INFO - Checking if loginTicketResponse exists...
+2025-08-16 14:49:56,870 - INFO - loginTicketResponse exists.
+2025-08-16 14:49:56,870 - INFO - Checking if the token has expired...
+2025-08-16 14:49:56,870 - DEBUG - Running is_expired() function for loginTicketRequest.xml
+2025-08-16 14:49:56,870 - DEBUG - Consulting NTP for get the datetime...
+2025-08-16 14:49:56,902 - DEBUG - Datetime values: epoch: 1755366573 | gentime: 2025-08-16T17:49:33Z | exptime: 2025-08-16T17:59:33Z
+2025-08-16 14:49:56,906 - INFO - The token has expired
+2025-08-16 14:49:56,906 - DEBUG - Consulting NTP for get the datetime...
+2025-08-16 14:49:56,932 - DEBUG - Datetime values: epoch: 1755366573 | gentime: 2025-08-16T17:49:33Z | exptime: 2025-08-16T17:59:33Z
+2025-08-16 14:49:56,933 - INFO - loginTicketRequest.xml successfully saved.
+2025-08-16 14:49:56,933 - DEBUG - Signing loginTicketRequest.xml...        
+2025-08-16 14:49:56,973 - DEBUG - loginTicketRequest.xml successfully signed.
+2025-08-16 14:49:56,973 - INFO - Starting CMS login request to AFIP
+2025-08-16 14:49:57,164 - INFO - CMS login request to AFIP ended successfully.
+2025-08-16 14:49:57,164 - DEBUG - login_ticket_response: <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <loginTicketResponse version="1.0">
     <header>
         <source>CN=wsaahomo, O=AFIP, C=AR, SERIALNUMBER=CUIT 44352675245</source>
         <destination>SERIALNUMBER=CUIT 20123456789, CN=certificadodefinitivo</destination>
-        <uniqueId>3359896406</uniqueId>
-        <generationTime>2025-08-14T15:17:14.429-03:00</generationTime>
-        <expirationTime>2025-08-15T03:17:14.429-03:00</expirationTime>
+        <uniqueId>365485143</uniqueId>
+        <generationTime>2025-08-16T14:49:34.147-03:00</generationTime>
+        <expirationTime>2025-08-17T02:49:34.147-03:00</expirationTime>
     </header>
     <credentials>
-        <token>P...g==</token>
-        <sign>H...w=</sign>
+        <token>PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/Pgo8c3NvIHZlcnNpb249IjIuMCI+CiAgICA8aWQgc3JjPSJDTj13c2FhaG9tbywgTz1BRklQLCBDPUFSLCBTRVJJQUxOVU1CRVI9Q1VJVCAzMzY5MzQ1MDIzOSIgZHN0PSJDTj13c2ZlLCBPPUFGSVAsIEM9QVIiIHVuaXF1ZV9pZD0iMzY1MzU1NDAyNCIgZ2VuX3RpbWU9IjE3NTUzNjY1MTQiIGV4cF90aW1lPSIxNzU1NDA5Nzc0Ii8+CiAgICA8b3BlcmF0aW9uIHR5cGU9ImxvZ2luIiB2YWx1ZT0iZ3JhbnRlZCI+CiAgICAgICAgPGxvZ2luIGVudGl0eT0iMzM2OTM0NTAyMzkiIHNlcnZpY2U9IndzZmUiIHVpZD0iU0VSSUFMTlVNQkVSPUNVSVQgMjA0NTc4NDQ2MTIsIENOPWNlcnRpZmljYWRvZGVmaW5pdGl2byIgYXV0aG1ldGhvZD0iY21zIiByZWdtZXRob2Q9IjIyIj4KICAgICAgICAgICAgPHJlbGF0aW9ucz4KICAgICAgICAgICAgICAgIDxyZWxhdGlvbiBrZXk9IjIwNDU3ODQ0NjEyIiByZWx0eXBlPSI0Ii8+CiAgICAgICAgICAgIDwvcmVsYXRpb25zPgogICAgICAgIDwvbG9naW4+CiAgICA8L29wZXJhdGlvbj4KPC9zc28+Cg==</token>
+        <sign>N82Px2J2X5Gw1mT+uo5NV9HjtR4z0Cvo2GRAssIzDuL9Qi+AhZEX9TiZqTnmh7xPG6xU9OF+/ysW9d69pGevcR+hgr9oI3QEVWJXCmCd6MfnMNIP4eTR58V+sZZmoW6IeZXSkCotuq2WqHpW9IPLudO0LqnO8lvGSgx7ucrhpho=</sign>
     </credentials>
 </loginTicketResponse>
 
-2025-08-14 15:17:36,890 - INFO - loginTicketResponse.xml successfully saved.
-2025-08-14 15:17:36,890 - INFO - Token generated.
-2025-08-14 15:17:36,890 - INFO - Generating invoice...
-2025-08-14 15:17:36,890 - DEBUG - Auth added to payload.
-2025-08-14 15:17:36,890 - INFO - Generating invoice...
-2025-08-14 15:17:37,215 - DEBUG - Response: {
+2025-08-16 14:49:57,166 - INFO - loginTicketResponse.xml successfully saved.
+2025-08-16 14:49:57,166 - INFO - Token generated.
+2025-08-16 14:49:57,166 - INFO - Generating invoice...
+2025-08-16 14:49:57,166 - DEBUG - Auth added to payload.
+2025-08-16 14:49:57,166 - INFO - Generating invoice...
+2025-08-16 14:49:57,512 - DEBUG - Response: {
     'FeCabResp': {
         'Cuit': 20123456789,
         'PtoVta': 1,
         'CbteTipo': 6,
-        'FchProceso': '20250814151718',
+        'FchProceso': '20250816144936',
         'CantReg': 1,
         'Resultado': 'R',
         'Reproceso': 'N'
@@ -255,7 +255,7 @@ El archivo `soap_client.py` contiene las consultas a 3 de los servicios SOAP de 
                 'DocNro': 12345678,
                 'CbteDesde': 69,
                 'CbteHasta': 69,
-                'CbteFch': '20250728',
+                'CbteFch': '20250816',
                 'Resultado': 'R',
                 'Observaciones': None,
                 'CAE': None,
@@ -273,31 +273,31 @@ El archivo `soap_client.py` contiene las consultas a 3 de los servicios SOAP de 
         ]
     }
 }
-2025-08-14 15:17:37,216 - INFO - Verifying if the response has errors...
-2025-08-14 15:17:37,216 - INFO - Errors identified in the response.
-2025-08-14 15:17:37,216 - INFO - Response has errors. Resolving...
-2025-08-14 15:17:37,217 - DEBUG - Error code: 10016
-2025-08-14 15:17:37,217 - DEBUG - Error message: El numero o fecha del comprobante no se corresponde con el proximo a autorizar. Consultar metodo FECompUltimoAutorizado.
-2025-08-14 15:17:37,217 - INFO - Starting invoice number synchronization.
-2025-08-14 15:17:37,217 - INFO - Consulting last authorized invoice...
-2025-08-14 15:17:37,458 - DEBUG - Response: {
+2025-08-16 14:49:57,513 - INFO - Verifying if the response has errors...
+2025-08-16 14:49:57,514 - INFO - Errors identified in the response.
+2025-08-16 14:49:57,514 - INFO - Response has errors. Resolving...
+2025-08-16 14:49:57,514 - DEBUG - Error code: 10016
+2025-08-16 14:49:57,514 - DEBUG - Error message: El numero o fecha del comprobante no se corresponde con el proximo a autorizar. Consultar metodo FECompUltimoAutorizado.
+2025-08-16 14:49:57,514 - INFO - Starting invoice number synchronization.
+2025-08-16 14:49:57,514 - INFO - Consulting last authorized invoice...
+2025-08-16 14:49:57,781 - DEBUG - Response: {
     'PtoVta': 1,
     'CbteTipo': 6,
     'CbteNro': 83,
     'Errors': None,
     'Events': None
 }
-2025-08-14 15:17:37,459 - INFO - Updated invoice with new number: 84
-2025-08-14 15:17:37,459 - INFO - Error resolved. Retrying invoice submission
-2025-08-14 15:17:37,459 - INFO - Generating invoice...
-2025-08-14 15:17:37,821 - DEBUG - Response: {
+2025-08-16 14:49:57,781 - INFO - Updated invoice with new number: 84
+2025-08-16 14:49:57,782 - INFO - Error resolved. Retrying invoice submission
+2025-08-16 14:49:57,782 - INFO - Generating invoice...
+2025-08-16 14:49:58,238 - DEBUG - Response: {
     'FeCabResp': {
         'Cuit': 20123456789,
         'PtoVta': 1,
         'CbteTipo': 6,
-        'FchProceso': '20250814151715',
+        'FchProceso': '20250816144934',
         'CantReg': 1,
-        'Resultado': 'R',
+        'Resultado': 'A',
         'Reproceso': 'N'
     },
     'FeDetResp': {
@@ -308,26 +308,19 @@ El archivo `soap_client.py` contiene las consultas a 3 de los servicios SOAP de 
                 'DocNro': 12345678,
                 'CbteDesde': 84,
                 'CbteHasta': 84,
-                'CbteFch': '20250728',
-                'Resultado': 'R',
-                'Observaciones': {
-                    'Obs': [
-                        {
-                            'Code': 10016,
-                            'Msg': 'Campo CbteFch Debe estar comprendido  en el  rango  N-5 y N+5 siendo N la fecha de envio del pedido  de autorizacion para 1 - Productos'
-                        }
-                    ]
-                },
-                'CAE': None,
-                'CAEFchVto': None
+                'CbteFch': '20250816',
+                'Resultado': 'A',
+                'Observaciones': None,
+                'CAE': '75332268574214',
+                'CAEFchVto': '20250826'
             }
         ]
     },
     'Events': None,
     'Errors': None
 }
-2025-08-14 15:17:37,822 - DEBUG - Zeep object converted to dict.
-2025-08-14 15:17:37,822 - INFO - Invoice generated.
+2025-08-16 14:49:58,239 - DEBUG - Zeep object converted to dict.
+2025-08-16 14:49:58,239 - INFO - Invoice generated.
 ```
 
 ---
