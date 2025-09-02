@@ -1,7 +1,7 @@
 ![human-coded](https://badgen.net/static/Human%20Coded/100%25/green)
-# Servicio Web SOAP de Facturación para Punto de Venta con Integración a la Agencia Tributaria Argentina
+# SOAP Web Invoicing Service for Point of Sale with Integration to the Argentine Tax Agency
 
-Este sistema es un servicio web que actúa como middleware entre sistemas POS locales y AFIP (Administración Federal de Ingresos Públicos) / ARCA (Agencia de Recaudación y Control Aduanero) el organismo fiscal de Argentina. Recibe comprobantes en formato JSON, los transforma a XML compatible con los Web Services de AFIP/ARCA, envía la solicitud vía SOAP, procesa la respuesta y devuelve el resultado al POS en formato JSON. También resuelve de forma automática ciertos errores comunes de facturación. El objetivo es simplificar el cumplimiento fiscal desde aplicaciones de escritorio.
+This system is a web service that acts as middleware between local POS systems and AFIP (Administración Federal de Ingresos Públicos) / ARCA (Customs Revenue and Control Agency), the tax authority in Argentina. It receives invoices in JSON format, transforms them into XML compatible with AFIP/ARCA Web Services, sends the request via SOAP, processes the response, and returns the result to the POS in JSON format. It also automatically handles certain common invoicing errors. The goal is to simplify tax compliance from desktop applications.
 
 [![Python](https://img.shields.io/badge/python-3.11-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![lxml](https://img.shields.io/badge/lxml-5.4.0-orange)](https://pypi.org/project/lxml/)
@@ -11,24 +11,24 @@ Este sistema es un servicio web que actúa como middleware entre sistemas POS lo
 [![tenacity](https://img.shields.io/badge/tenacity-9.1.2-yellow)](https://pypi.org/project/tenacity/)
 [![ntplib](https://img.shields.io/badge/ntplib-0.4.0-lightgrey)](https://pypi.org/project/ntplib/)
 
-## Stack tecnológico
+## Tech Stack
 
-- **Lenguaje:** Python  
-- **Criptografía:** Uso directo de OpenSSL con `subprocess`  
-- **Comunicación con AFIP:** XML + SOAP  
-- **Comunicación con Punto de Venta:** FastAPI  
-- **Deploy:** Docker (ideal)
+- **Language:** Python  
+- **Cryptography:** Direct use of OpenSSL with `subprocess`  
+- **Communication with AFIP:** XML + SOAP  
+- **Communication with Point of Sale:** FastAPI  
+- **Deployment:** Docker (ideal)
 
-## ¿Stateless?
+## Stateless?
 
-Parcialmente. El servicio no almacena información transaccional ni de estado entre solicitudes, salvo por el token de autenticación que persiste en memoria durante 12 horas (hasta que se necesite generar otro) y se reutiliza para todas las facturas emitidas en ese período.
+Partially. The service does not store transactional or state information between requests, except for the authentication token which persists in memory for 12 hours (until it needs to be refreshed) and is reused for all invoices issued within that period.
 
-## Arquitectura y Estructura del Proyecto
+## Project Architecture and Structure
 
-La arquitectura está pensada para ser sencilla y práctica de entender: una carpeta por responsabilidad.  
-A continuación se muestra un mapa ASCII de la arquitectura de carpetas y una breve descripción de la responsabilidad de cada una:
+The architecture is designed to be simple and easy to understand: one folder per responsibility.  
+Below is an ASCII map of the folder structure and a brief description of each one's responsibility:
 
-## Estructura del Proyecto
+## Project Structure
 
 ```text
 INVOICE_SERVICE  
@@ -51,77 +51,77 @@ INVOICE_SERVICE
 └── requirements.txt
 ```
 
-## Descripción de la arquitectura y los directorios
+## Architecture and Directory Description
 
 ### `api/`
-Contiene el endpoint POST que recibe los JSON con información de la venta y de la factura a construir antes de enviarla para su aprobación. También contiene los esquemas de Pydantic para la validación del JSON.
+Contains the POST endpoint that receives the JSON with sales and invoice information to be built before sending it for approval. It also contains the Pydantic schemas for JSON validation.
 
 ### `certificates/`
-Contiene los certificados, claves privadas, CSRs y otros elementos criptográficos necesarios para firmar la solicitud del ticket de acceso.
+Stores certificates, private keys, CSRs, and other cryptographic elements needed to sign the access ticket request.
 
 ### `controllers/`
-Contiene controladores separados por servicio SOAP. Cada controlador maneja un servicio específico.
+Contains controllers separated by SOAP service. Each controller handles a specific service.
 
 ### `crypto/`
-Contiene el módulo que firma la solicitud del ticket de acceso utilizando los elementos de la carpeta `certificates`.
+Contains the module that signs the access ticket request using the elements from the `certificates` folder.
 
 ### `payload_builder/`
-Contiene el módulo que arma y manipula los diccionarios (`dict`) que necesita la librería Zeep para consumir los servicios SOAP.
+Contains the module that builds and manipulates the dictionaries (`dict`) required by the Zeep library to consume SOAP services.
 
 ### `error_handler/`
-Contiene una función que recibe códigos de error y redirige el procesamiento a controladores especializados que intentan resolver dichos errores de forma automática. Este módulo puede ampliarse a medida que se descubren nuevos tipos de errores.
+Contains a function that receives error codes and redirects processing to specialized controllers that attempt to automatically resolve those errors. This module can be expanded as new error types are discovered.
 
 ### `soap_management/`
-Maneja la comunicación con los servicios SOAP de AFIP/ARCA y analiza las respuestas en busca de errores. Los errores suelen presentarse como un array al final de la respuesta.
+Handles communication with AFIP/ARCA SOAP services and parses the responses looking for errors. Errors usually appear as an array at the end of the response.
 
 ### `time/`
-Contiene funciones auxiliares para la gestión de fechas y horas.
+Contains helper functions for date and time management.
 
 ### `utils/`
-Contiene funciones auxiliares generales: logger, validación de existencias, entre otras.
+Contains general helper functions: logger, existence validation, among others.
 
 ### `xml_management/`
-Almacena los archivos XML necesarios para el funcionamiento del servicio y contiene todas las funciones necesarias para construir y manipular estos archivos.
+Stores the XML files required for the service to function and contains all necessary functions to build and manipulate these files.
 
 ### `exceptions.py`
-Contiene las excepciones personalizadas del servicio.
+Contains the custom exceptions of the service.
 
-## Dependencias principales
+## Main Dependencies
 
-- **lxml:** Biblioteca para el procesamiento de los XML, para manipular y validar los archivos XML requeridos por AFIP/ARCA.  
-- **zeep:** Cliente SOAP para consumir los servicios web de AFIP/ARCA de forma sencilla.  
-- **fastapi:** Para construir la API REST que recibe las solicitudes JSON desde el sistema POS.  
-- **pydantic:** Validación y serialización de datos para que los JSON cumplan con los esquemas.  
-- **tenacity:** Una de las ideas de este servicio es que logre generar la factura en la mayor cantidad posible de casos. En caso de errores no críticos, se realizan reintentos automáticos usando `tenacity`. Esta librería es ideal para eso.
-- **ntplib:** Se utiliza en este caso para que la solicitud de ticket de acceso contenga la hora sincronizada con AFIP/ARCA. 
+- **lxml:** Library for XML processing, used to manipulate and validate the XML files required by AFIP/ARCA.  
+- **zeep:** SOAP client for easily consuming AFIP/ARCA web services.  
+- **fastapi:** Used to build the REST API that receives JSON requests from the POS system.  
+- **pydantic:** Data validation and serialization to ensure that the JSONs comply with the schemas.  
+- **tenacity:** One of the goals of this service is to generate invoices in as many cases as possible. In the case of non-critical errors, automatic retries are performed using `tenacity`. This library is ideal for that purpose.
+- **ntplib:** Used to ensure that the access ticket request contains the time synchronized with AFIP/ARCA.
 
-## Flujo de trabajo (simplificado)
+## Workflow (Simplified)
 
-1. Verificar si el archivo `loginTicketResponse.xml` existe:
-   - Si existe, verificar si el token está expirado:
-     - Si está expirado, generar un nuevo token desde cero.
-     - Si no está expirado, reutilizar el token actual.
-   - Si no existe, verificar si el archivo `loginTicketRequest.xml` existe:
-     - Si existe, verificar si el campo `<expirationTime>` del token expiró:
-       - Si expiró, generar un nuevo token desde cero.
-       - Si no expiró, verificar si el token está expirado:
-         - Si está expirado, generar un nuevo token desde cero.
-         - Si no, generar el token a partir del existente.
-     - Si no existe, generar un nuevo token desde cero.
+1. Check if the file `loginTicketResponse.xml` exists:
+   - If it exists, verify if the token is expired:
+     - If expired, generate a new token from scratch.
+     - If not expired, reuse the current token.
+   - If it does not exist, check if the file `loginTicketRequest.xml` exists:
+     - If it exists, check if the `<expirationTime>` field in the token has expired:
+       - If expired, generate a new token from scratch.
+       - If not expired, verify if the token is expired:
+         - If expired, generate a new token from scratch.
+         - If not, generate the token from the existing one.
+     - If it does not exist, generate a new token from scratch.
 
-2. Generar la factura (CAE) con el token válido obtenido o generado.
+2. Generate the invoice (CAE) using the valid token obtained or generated.
 
-3. Devolver la respuesta con los datos del CAE.
+3. Return the response with the CAE data.
 
-## Ejecutar localmente sin Docker
+## Running Locally Without Docker
 
-1. Clonar el repositorio 
-2. Instalar las dependencias: `pip install -r requirements.txt`
-3. Levantar el servicio con Uvicorn:
-- `uvicorn.service.api.app:app --reload`
-4. Una vez disponible el servicio, podrá recibir un JSON con la estructura definida en `api/models/invoice.py` al endpoint que se encuentra en `api/app.py`.
+1. Clone the repository  
+2. Install dependencies: `pip install -r requirements.txt`  
+3. Start the service with Uvicorn:  
+   - `uvicorn.service.api.app:app --reload`  
+4. Once the service is running, it will accept a JSON with the structure defined in `api/models/invoice.py` at the endpoint located in `api/app.py`.
 
-## Ejemplo del JSON que espera recibir el endpoint
+## Example of the JSON Expected by the Endpoint
 
 ```json
 {
@@ -164,43 +164,43 @@ Contiene las excepciones personalizadas del servicio.
 }
 ```
 
-## Explicación de los servicios SOAP a consultar que se encuentran en este software  
-Directorio: `service/soap_management/soap_client.py`
+## Explanation of the SOAP Services Queried by This Software  
+Directory: `service/soap_management/soap_client.py`
 
-El archivo `soap_client.py` contiene las consultas a 3 de los servicios SOAP de AFIP/ARCA (el nombre de las funciones es el mismo que el del servicio consultado):
+The file `soap_client.py` contains calls to 3 of the AFIP/ARCA SOAP services (the function names match the service names):
 
 - `login_cms(b64ms)`  
-  Servicio que permite obtener el ticket de acceso (TA) para autenticarse ante AFIP/ARCA.
-  Recibe como parámetro un CMS (`b64ms`) que debe estar en binario (ver `crypto/sign.py/get_binary_cms()`).
-  Devuelve un XML llamado `loginTicketResponse.xml` que contiene el token necesario para consultar los otros servicios, expira en 12 horas.
+  Service that obtains the access ticket (TA) to authenticate with AFIP/ARCA.  
+  It receives a CMS (`b64ms`) parameter, which must be in binary (see `crypto/sign.py/get_binary_cms()`).  
+  Returns an XML called `loginTicketResponse.xml` containing the token needed to query other services, which expires in 12 hours.
 
 - `fecae_solicitar(full_built_invoice)`  
-  Servicio que envía la solicitud de autorización para emitir el comprobante electrónico (factura).  
-  Recibe un `dict` (se explica más adelante) con los datos de la factura, el token de acceso y la firma. Devuelve un CAE (Código de Autorización Electrónico) en forma de `OrderedDict`. Si la factura es aprobada, o, si hubo un error con los datos enviados, devuelve también un `OrderedDict` pero con un array adjunto al final con información del error.
+  Service that sends the authorization request to issue the electronic invoice.  
+  Receives a `dict` (explained later) with invoice data, access token, and signature. Returns a CAE (Electronic Authorization Code) as an `OrderedDict`. If the invoice is approved, or if there was an error with the sent data, it also returns an `OrderedDict` but with an array attached at the end containing error information.
 
 - `fe_comp_ultimo_autorizado(auth, ptovta, cbtetipo)`  
-  Este servicio consulta cuál fue el último comprobante autorizado por AFIP/ARCA para un determinado punto de venta (`ptovta`) y tipo de comprobante (`cbtetipo`).  
-  Es fundamental para conocer el número correlativo que debe tener la próxima factura.  
-  Recibe como argumento:
+  This service queries the last invoice authorized by AFIP/ARCA for a given point of sale (`ptovta`) and invoice type (`cbtetipo`).  
+  It is essential to know the next invoice’s sequential number.  
+  Receives as argument:
   
-  - `auth`: Un `dict` que contiene las credenciales necesarias para la autenticación, incluyendo:
-    - `token`: Token de acceso vigente.
-    - `sign`: Firma digital.
-    - `cuit`: CUIT de la empresa emisora.
+  - `auth`: A `dict` containing the credentials needed for authentication, including:
+    - `token`: Current access token.
+    - `sign`: Digital signature.
+    - `cuit`: CUIT of the issuing company.
   
-  Este servicio se utiliza para solucionar el error `10016` (ver `service/response_errors_handler/error_handler.py`), solicitando el número de comprobante actual para agregarlo a la factura a aprobar luego de que se haya devuelto rechazada con dicho error adjunto.
+  This service is used to resolve error `10016` (see `service/response_errors_handler/error_handler.py`), by requesting the current invoice number to add it to the invoice to be approved after it was rejected with this error attached.
 
 ---
 
-## Consideraciones adicionales
+## Additional Considerations
 
-- **Persistencia de tickets de acceso:**  
-  Si el contenedor o servidor donde se despliega el servicio se cae, no hay problema con los tickets de acceso (`loginTicketResponse.xml`). Al reiniciarse y recibir una solicitud de facturación, el servicio detectará que no existen los archivos y generará un nuevo ticket automáticamente.
+- **Access Ticket Persistence:**  
+  If the container or server where the service is deployed goes down, there is no issue with the access tickets (`loginTicketResponse.xml`). Upon restarting and receiving an invoicing request, the service will detect that the files are missing and automatically generate a new ticket.
 
-- **Despliegue flexible:**  
-  No es obligatorio usar Docker. El servicio puede ejecutarse directamente como script o dentro de cualquier entorno Python, siempre que se respeten los formatos de los archivos de entrada y salida. La protección de las credenciales (tokens, certificados) es responsabilidad del usuario o administrador del entorno.
+- **Flexible Deployment:**  
+  Using Docker is not mandatory. The service can run directly as a script or within any Python environment, as long as the input and output file formats are respected. The protection of credentials (tokens, certificates) is the responsibility of the user or environment administrator.
 
-### Flujo de vida completo representado con logs (y corrección automática de error incluida)
+### Full Lifecycle Flow Represented with Logs (Including Automatic Error Correction)
 
 ```
 2025-08-16 14:49:56,869 - INFO - Starting the invoice request process...
@@ -228,8 +228,8 @@ El archivo `soap_client.py` contiene las consultas a 3 de los servicios SOAP de 
         <expirationTime>2025-08-17T02:49:34.147-03:00</expirationTime>
     </header>
     <credentials>
-        <token>PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/Pgo8c3NvIHZlcnNpb249IjIuMCI+CiAgICA8aWQgc3JjPSJDTj13c2FhaG9tbywgTz1BRklQLCBDPUFSLCBTRVJJQUxOVU1CRVI9Q1VJVCAzMzY5MzQ1MDIzOSIgZHN0PSJDTj13c2ZlLCBPPUFGSVAsIEM9QVIiIHVuaXF1ZV9pZD0iMzY1MzU1NDAyNCIgZ2VuX3RpbWU9IjE3NTUzNjY1MTQiIGV4cF90aW1lPSIxNzU1NDA5Nzc0Ii8+CiAgICA8b3BlcmF0aW9uIHR5cGU9ImxvZ2luIiB2YWx1ZT0iZ3JhbnRlZCI+CiAgICAgICAgPGxvZ2luIGVudGl0eT0iMzM2OTM0NTAyMzkiIHNlcnZpY2U9IndzZmUiIHVpZD0iU0VSSUFMTlVNQkVSPUNVSVQgMjA0NTc4NDQ2MTIsIENOPWNlcnRpZmljYWRvZGVmaW5pdGl2byIgYXV0aG1ldGhvZD0iY21zIiByZWdtZXRob2Q9IjIyIj4KICAgICAgICAgICAgPHJlbGF0aW9ucz4KICAgICAgICAgICAgICAgIDxyZWxhdGlvbiBrZXk9IjIwNDU3ODQ0NjEyIiByZWx0eXBlPSI0Ii8+CiAgICAgICAgICAgIDwvcmVsYXRpb25zPgogICAgICAgIDwvbG9naW4+CiAgICA8L29wZXJhdGlvbj4KPC9zc28+Cg==</token>
-        <sign>N82Px2J2X5Gw1mT+uo5NV9HjtR4z0Cvo2GRAssIzDuL9Qi+AhZEX9TiZqTnmh7xPG6xU9OF+/ysW9d69pGevcR+hgr9oI3QEVWJXCmCd6MfnMNIP4eTR58V+sZZmoW6IeZXSkCotuq2WqHpW9IPLudO0LqnO8lvGSgx7ucrhpho=</sign>
+        <token>P...g==</token>
+        <sign>N...o=</sign>
     </credentials>
 </loginTicketResponse>
 
@@ -326,7 +326,7 @@ El archivo `soap_client.py` contiene las consultas a 3 de los servicios SOAP de 
 
 ---
 
-### Ejemplo de la estructura de lo que debe recibir `fecae_solicitar(full_built_invoice)`:
+### Example of the structure that `fecae_solicitar(full_built_invoice)` should receive:
 
 ```text
 {
@@ -371,7 +371,7 @@ El archivo `soap_client.py` contiene las consultas a 3 de los servicios SOAP de 
 }
 ```
 
-### Ejemplo de respuesta exitosa:
+### Example of a successful response:
 
 ```text
 {
@@ -405,7 +405,7 @@ El archivo `soap_client.py` contiene las consultas a 3 de los servicios SOAP de 
 }
 ```
 
-### Ejemplo de respuesta con error:
+### Example of an error response:
 
 ```text
 {
@@ -446,10 +446,10 @@ El archivo `soap_client.py` contiene las consultas a 3 de los servicios SOAP de 
 }
 ```
 
-## Licencia
+## License
 
-Este proyecto está bajo la licencia [MIT](./LICENSE) (licencia permisiva de código abierto).
+This project is licensed under the [MIT](./LICENSE) license (a permissive open-source license).
 
-Podés usar, copiar, modificar y distribuir el software libremente, siempre incluyendo el aviso de copyright y sin garantías.
+You are free to use, copy, modify, and distribute the software, always including the copyright notice and without any warranties.
 
 ---
